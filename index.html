@@ -1,12 +1,315 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="refresh" content="0; url=./privacy.html">
-  <link rel="canonical" href="./privacy.html">
-  <title>InvoiceGrab</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Amazon Rechnungen herunterladen — alle auf einmal als PDF | InvoiceGrab</title>
+<meta name="description" content="Alle amazon.de-Rechnungen eines Zeitraums als PDF laden: ein ZIP, GoBD-konforme Dateinamen, DATEV-tauglicher CSV-Index. Chrome-Erweiterung.">
+<link rel="canonical" href="https://jenslaufer.com/invoicegrab-site/">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/png" href="./img/icon-128.png">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jenslaufer.com/invoicegrab-site/">
+<meta property="og:title" content="Amazon Rechnungen herunterladen — alle auf einmal als PDF">
+<meta property="og:description" content="Zeitraum wählen, ein Klick: alle Rechnungs-PDFs deiner amazon.de-Bestellungen als ZIP, GoBD-konform benannt, mit DATEV-tauglichem Index.">
+<meta property="og:image" content="https://jenslaufer.com/invoicegrab-site/img/og.jpg">
+<meta property="og:locale" content="de_DE">
+<meta name="twitter:card" content="summary_large_image">
+
+<style>
+:root{
+  --paper:#FBFAF7; --ink:#1C1B18; --brand:#1E6A4E; --deep:#123F30;
+  --muted:#6B675C; --line:#D9D5CC; --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono","Segoe UI Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.6 var(--sans);-webkit-font-smoothing:antialiased}
+.wrap{max-width:960px;margin:0 auto;padding:0 24px}
+a{color:var(--deep)}
+h1,h2,h3{letter-spacing:-.015em;line-height:1.2;margin:0}
+h1{font-size:clamp(2rem,5vw,3rem);font-weight:700}
+h2{font-size:clamp(1.3rem,3vw,1.7rem);font-weight:650;color:var(--deep)}
+h3{font-size:1.05rem;font-weight:650}
+p{margin:.7em 0}
+.mono{font-family:var(--mono);font-size:.92em}
+
+/* header */
+.top{border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:16px;padding-bottom:16px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:650;text-decoration:none;color:var(--ink)}
+.brand svg{display:block}
+.top a.plain{color:var(--muted);text-decoration:none;font-size:.92rem}
+.top a.plain:hover{color:var(--deep)}
+
+/* hero */
+.hero{padding:56px 0 40px;border-bottom:1px solid var(--line)}
+.hero .kicker{font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:14px}
+.hero p.lead{font-size:1.12rem;max-width:44em;color:#33312B}
+.cta{display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:0 22px;margin-top:22px;
+  background:var(--brand);color:#fff;text-decoration:none;font-weight:600;border-radius:2px}
+.cta:hover{background:var(--deep)}
+.under{margin-top:12px;font-size:.9rem;color:var(--muted)}
+.under strong{color:var(--ink);font-weight:600}
+
+/* ledger comparison */
+.ledger{margin:0;padding:0;list-style:none;border-top:1px solid var(--line)}
+.ledger li{display:flex;gap:14px;padding:11px 0;border-bottom:1px solid var(--line);align-items:baseline}
+.ledger .n{font-family:var(--mono);font-size:.8rem;color:var(--muted);min-width:2.2em}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:26px}
+@media(max-width:720px){.cols{grid-template-columns:1fr;gap:28px}}
+
+section{padding:48px 0;border-bottom:1px solid var(--line)}
+section h2 + p{max-width:44em}
+
+/* feature blocks */
+.feat{margin-top:34px}
+.feat h3{margin-bottom:4px}
+.feat p{margin-top:0;color:#33312B;max-width:46em}
+figure{margin:18px 0 0}
+figure img{width:100%;height:auto;display:block;border:1px solid var(--line);border-radius:2px}
+figcaption{font-size:.83rem;color:var(--muted);margin-top:8px}
+
+/* price */
+.plans{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:26px}
+@media(max-width:720px){.plans{grid-template-columns:1fr}}
+.plan{border:1px solid var(--line);border-radius:2px;padding:22px;background:#fff}
+.plan.pro{border-color:var(--brand);border-width:2px}
+.badge{font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;font-weight:650;color:var(--brand)}
+.price{font-family:var(--mono);font-size:1.35rem;font-weight:600;margin:6px 0 2px}
+.plan ul{margin:12px 0 0;padding-left:1.1em}
+.plan li{margin:5px 0}
+
+/* faq */
+details{border-bottom:1px solid var(--line);padding:14px 0}
+details summary{cursor:pointer;font-weight:600;list-style:none}
+details summary::-webkit-details-marker{display:none}
+details summary::before{content:"+";font-family:var(--mono);color:var(--brand);margin-right:10px}
+details[open] summary::before{content:"−"}
+details p{margin:10px 0 0;color:#33312B}
+
+footer{padding:32px 0 56px;color:var(--muted);font-size:.88rem}
+footer a{color:var(--muted)}
+</style>
 </head>
 <body>
-  <p>InvoiceGrab — <a href="./privacy.html">Datenschutzerklärung</a></p>
+
+<div class="top"><div class="wrap">
+  <a class="brand" href="./">
+    <svg width="26" height="26" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+      <rect x="0.5" y="0.5" width="31" height="31" rx="4" fill="#FBFAF7"/>
+      <rect x="4" y="4" width="24" height="24" rx="2.5" stroke="#1E6A4E" stroke-width="3"/>
+      <path d="M16 9.5v7.5" stroke="#1E6A4E" stroke-width="3" stroke-linecap="round"/>
+      <path d="M12 14l4 4 4-4" stroke="#1E6A4E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M10.5 22.5h11" stroke="#1E6A4E" stroke-width="3" stroke-linecap="round"/>
+    </svg>
+    InvoiceGrab
+  </a>
+  <a class="plain" href="https://chromewebstore.google.com/detail/gkjglloohfeojkcflpafcahfkabdflom">Im Chrome Web Store</a>
+</div></div>
+
+<header class="hero"><div class="wrap">
+  <div class="kicker">Chrome-Erweiterung für amazon.de</div>
+  <h1>Amazon Rechnungen herunterladen — alle auf einmal</h1>
+  <p class="lead">Zeitraum wählen, ein Klick: alle Rechnungs-PDFs deiner amazon.de-Bestellungen
+  landen als ZIP im Download-Ordner. Benannt nach GoBD-Schema, mit einem CSV-Index, den dein
+  Steuerberater direkt lesen kann.</p>
+  <a class="cta" href="https://chromewebstore.google.com/detail/gkjglloohfeojkcflpafcahfkabdflom">Zu Chrome hinzufügen</a>
+  <p class="under"><strong>Kostenlos: 5 Rechnungen pro Lauf.</strong>
+  PRO 19 €/Jahr oder 3 €/Monat. Läuft in deinem Browser mit deiner bestehenden
+  Amazon-Anmeldung — keine Zugangsdaten, kein Upload, kein Server.</p>
+</div></header>
+
+<section><div class="wrap">
+  <h2>Am Quartalsende sind es vier Klicks pro Beleg</h2>
+  <div class="cols">
+    <div>
+      <h3>Von Hand</h3>
+      <ul class="ledger">
+        <li><span class="n">01</span><span>Bestellung öffnen</span></li>
+        <li><span class="n">02</span><span>Rechnung suchen — mal beim Händler, mal bei Amazon</span></li>
+        <li><span class="n">03</span><span>PDF speichern, Datei umbenennen</span></li>
+        <li><span class="n">04</span><span>Und am Ende zählen, ob etwas fehlt</span></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Mit InvoiceGrab</h3>
+      <ul class="ledger">
+        <li><span class="n">01</span><span>Symbol anklicken, Zeitraum wählen</span></li>
+        <li><span class="n">02</span><span>„Rechnungen als ZIP laden“</span></li>
+        <li><span class="n">03</span><span>ZIP mit PDFs und <span class="mono">index.csv</span> im Download-Ordner</span></li>
+        <li><span class="n">04</span><span>Die Zusammenfassung sagt, was fehlt</span></li>
+      </ul>
+    </div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <h2>Was du bekommst</h2>
+
+  <div class="feat">
+    <h3>Ein Lauf statt fünfzig Klicks</h3>
+    <p>Das Panel öffnet sich direkt auf deiner Bestellseite. Zeitraum als Jahr, Quartal oder
+    freies Datum. Der Fortschritt läuft sichtbar mit — du siehst, bei welcher Bestellung er steht.</p>
+    <figure><img src="./img/01-zeitraum.webp" width="1100" height="688" alt="Das InvoiceGrab-Panel auf der amazon.de-Bestellseite mit Zeitraumauswahl und der Schaltfläche „Rechnungen als ZIP laden“"></figure>
+  </div>
+
+  <div class="feat">
+    <h3>Prüfungsfest benannt</h3>
+    <p>Jede Datei heißt <span class="mono">JJJJ-MM-TT_Bestellnr_Betrag.pdf</span> — sortierbar,
+    eindeutig, ohne Nacharbeit im Dateimanager.</p>
+    <figure><img loading="lazy" src="./img/04-gobd-namen.webp" width="1100" height="688" alt="Download-Ordner mit Rechnungs-PDFs im Namensschema Datum, Bestellnummer und Betrag"></figure>
+  </div>
+
+  <div class="feat">
+    <h3>Netto, USt-Betrag und USt-Satz je Beleg</h3>
+    <p>Aus der Rechnung gelesen, nicht geschätzt. Gemischte Sätze (19 % und 7 % in einer
+    Bestellung) stehen als Splitbuchung in der <span class="mono">index.csv</span>:
+    Belegdatum; Belegnummer; Netto; USt-Betrag; USt-Satz; Brutto; Währung; Dateiname.</p>
+    <figure><img loading="lazy" src="./img/05-index-csv.webp" width="1100" height="688" alt="Die index.csv in einer Tabellenkalkulation mit Spalten für Belegdatum, Belegnummer, Netto, USt und Brutto"></figure>
+  </div>
+
+  <div class="feat">
+    <h3>Vollständigkeit, nicht Stichprobe</h3>
+    <p>Die <span class="mono">zusammenfassung.txt</span> im ZIP zeigt pro Monat Bestellungen und
+    gefundene Rechnungen, nennt Monate ohne Beleg und listet übersprungene Bestellungen.
+    Fehlendes fällt auf, statt still zu fehlen.</p>
+    <figure><img loading="lazy" src="./img/03-zip.webp" width="1100" height="688" alt="InvoiceGrab meldet den fertigen Lauf mit dem Namen der erzeugten ZIP-Datei"></figure>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <h2>Preis</h2>
+  <p>Ein Jahresabschluss zahlt das Abo beim ersten Lauf zurück.</p>
+  <div class="plans">
+    <div class="plan">
+      <div class="badge">Free</div>
+      <div class="price">Kostenlos</div>
+      <p style="color:var(--muted);margin:0">dauerhaft, ohne Konto</p>
+      <ul>
+        <li>5 Rechnungen pro Lauf</li>
+        <li>GoBD-Dateinamen und <span class="mono">index.csv</span></li>
+        <li>Zum Ausprobieren und für Gelegenheitskäufer</li>
+      </ul>
+    </div>
+    <div class="plan pro">
+      <div class="badge">Pro</div>
+      <div class="price">19 €/Jahr</div>
+      <p style="color:var(--muted);margin:0">oder 3 €/Monat</p>
+      <ul>
+        <li>Unbegrenzt Rechnungen pro Lauf</li>
+        <li>Ganze Jahre in einem Durchgang</li>
+        <li>Zahlung über ExtensionPay/Stripe</li>
+      </ul>
+    </div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <h2>Deine Daten bleiben auf deinem Rechner</h2>
+  <p>InvoiceGrab hat keinen Server. Der Lauf passiert im Browser, in deiner bereits angemeldeten
+  Amazon-Sitzung. Die Erweiterung fragt keine Zugangsdaten ab, lädt nichts hoch und liest
+  außerhalb eines von dir gestarteten Laufs nichts.</p>
+  <ul class="ledger">
+    <li><span class="n mono">01</span><span><strong>storage</strong> — Einstellungen und Lizenzstatus, lokal im Browser</span></li>
+    <li><span class="n mono">02</span><span><strong>downloads</strong> — legt das fertige ZIP im Download-Ordner ab</span></li>
+    <li><span class="n mono">03</span><span><strong>www.amazon.de</strong> — liest während eines Laufs deine eigenen Bestell- und Rechnungsseiten. Keine anderen Websites.</span></li>
+  </ul>
+  <p><a href="./privacy.html">Datenschutzerklärung lesen</a></p>
+</div></section>
+
+<section><div class="wrap">
+  <h2>Häufige Fragen</h2>
+
+  <details><summary>Kann ich alle Amazon-Rechnungen auf einmal herunterladen?</summary>
+    <p>Ja. Du wählst einen Zeitraum — ein Jahr, ein Quartal oder freie Daten — und InvoiceGrab lädt
+    die Rechnungs-PDFs aller Bestellungen darin in einem Durchgang als ZIP. In der kostenlosen
+    Version sind es 5 Rechnungen pro Lauf, mit PRO unbegrenzt.</p></details>
+
+  <details><summary>Sind die Dateinamen GoBD-konform?</summary>
+    <p>Die Dateien werden nach dem Schema <span class="mono">JJJJ-MM-TT_Bestellnr_Betrag.pdf</span>
+    benannt: chronologisch sortierbar, eindeutig einer Bestellung zugeordnet und ohne manuelles
+    Umbenennen archivierbar. Die GoBD-Konformität deiner Ablage hängt zusätzlich an deinem
+    Archivsystem — die Benennung ist der Teil, den InvoiceGrab übernimmt.</p></details>
+
+  <details><summary>Funktioniert InvoiceGrab mit amazon.com oder anderen Marktplätzen?</summary>
+    <p>Nein. Unterstützt wird ausschließlich amazon.de. Weitere Marktplätze stehen auf der Roadmap.</p></details>
+
+  <details><summary>Was passiert mit Bestellungen ohne hinterlegte Rechnung?</summary>
+    <p>Sie werden übersprungen und in der <span class="mono">zusammenfassung.txt</span> namentlich
+    ausgewiesen. InvoiceGrab fordert keine fehlenden Rechnungen bei Marketplace-Händlern an —
+    aber du siehst, welche fehlen.</p></details>
+
+  <details><summary>Brauche ich meine Amazon-Zugangsdaten?</summary>
+    <p>Nein. InvoiceGrab läuft in deinem Browser und nutzt die Sitzung, in der du ohnehin
+    angemeldet bist. Es gibt kein Login-Feld und keinen Upload.</p></details>
+
+  <details><summary>Kann ich die Belege nach DATEV übernehmen?</summary>
+    <p>Im ZIP liegt eine <span class="mono">index.csv</span> mit Belegdatum, Belegnummer, Netto,
+    USt-Betrag, USt-Satz, Brutto, Währung und Dateiname — die Spalten, die eine Buchungsvorlage
+    braucht. Gemischte Steuersätze stehen als Splitbuchung.</p></details>
+
+  <details><summary>Was kostet InvoiceGrab?</summary>
+    <p>Die kostenlose Version bleibt dauerhaft kostenlos und lädt 5 Rechnungen pro Lauf.
+    PRO kostet 19 €/Jahr oder 3 €/Monat und hebt die Begrenzung auf.</p></details>
+</div></section>
+
+<section style="border-bottom:none"><div class="wrap" style="text-align:center">
+  <h2>Ein Quartal in einem Lauf</h2>
+  <a class="cta" href="https://chromewebstore.google.com/detail/gkjglloohfeojkcflpafcahfkabdflom">Zu Chrome hinzufügen</a>
+</div></section>
+
+<footer><div class="wrap">
+  © 2026 Jens Laufer · InvoiceGrab ·
+  <a href="./privacy.html">Datenschutzerklärung</a> ·
+  <a href="mailto:jenslaufer@gmail.com">jenslaufer@gmail.com</a>
+</div></footer>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "InvoiceGrab",
+  "description": "Chrome-Erweiterung, die alle Rechnungs-PDFs der eigenen amazon.de-Bestellungen eines Zeitraums als ZIP herunterlädt — GoBD-konform benannt, mit DATEV-tauglichem CSV-Index.",
+  "url": "https://jenslaufer.com/invoicegrab-site/",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Chrome",
+  "inLanguage": "de",
+  "softwareVersion": "0.2.0",
+  "installUrl": "https://chromewebstore.google.com/detail/gkjglloohfeojkcflpafcahfkabdflom",
+  "author": { "@type": "Person", "name": "Jens Laufer" },
+  "offers": [
+    { "@type": "Offer", "name": "Free", "price": "0", "priceCurrency": "EUR",
+      "description": "5 Rechnungen pro Lauf, dauerhaft kostenlos" },
+    { "@type": "Offer", "name": "Pro (jährlich)", "price": "19", "priceCurrency": "EUR",
+      "description": "Unbegrenzt Rechnungen pro Lauf, Abrechnung pro Jahr" },
+    { "@type": "Offer", "name": "Pro (monatlich)", "price": "3", "priceCurrency": "EUR",
+      "description": "Unbegrenzt Rechnungen pro Lauf, Abrechnung pro Monat" }
+  ]
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "Kann ich alle Amazon-Rechnungen auf einmal herunterladen?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Ja. Du wählst einen Zeitraum und InvoiceGrab lädt die Rechnungs-PDFs aller amazon.de-Bestellungen darin in einem Durchgang als ZIP. Kostenlos sind 5 Rechnungen pro Lauf, mit PRO unbegrenzt." } },
+    { "@type": "Question", "name": "Sind die Dateinamen GoBD-konform?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Die Dateien heißen JJJJ-MM-TT_Bestellnr_Betrag.pdf — chronologisch sortierbar, eindeutig zugeordnet, ohne manuelles Umbenennen archivierbar." } },
+    { "@type": "Question", "name": "Funktioniert InvoiceGrab mit amazon.com oder anderen Marktplätzen?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Nein, unterstützt wird ausschließlich amazon.de. Weitere Marktplätze stehen auf der Roadmap." } },
+    { "@type": "Question", "name": "Was passiert mit Bestellungen ohne hinterlegte Rechnung?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Sie werden übersprungen und in der zusammenfassung.txt ausgewiesen. InvoiceGrab fordert keine fehlenden Rechnungen bei Marketplace-Händlern an." } },
+    { "@type": "Question", "name": "Brauche ich meine Amazon-Zugangsdaten?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Nein. InvoiceGrab läuft im Browser in der Sitzung, in der du ohnehin angemeldet bist. Es gibt kein Login-Feld und keinen Upload." } },
+    { "@type": "Question", "name": "Kann ich die Belege nach DATEV übernehmen?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Im ZIP liegt eine index.csv mit Belegdatum, Belegnummer, Netto, USt-Betrag, USt-Satz, Brutto, Währung und Dateiname. Gemischte Steuersätze stehen als Splitbuchung." } }
+  ]
+}
+</script>
+
 </body>
 </html>
