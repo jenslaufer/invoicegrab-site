@@ -1,7 +1,8 @@
 // Tests for the InvoiceGrab site (plain static, no build step).
 // Run: node tests/site.test.mjs   — exit 0 = green, 1 = red.
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync, existsSync, readdirSync } from 'node:fs';
 import { createHash } from 'node:crypto';
+import { execFileSync } from 'node:child_process';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -96,6 +97,79 @@ check('no price on the page that ExtPay does not sell', () => {
 
 check('free tier is stated as shipped (5 per run)', () => {
   assert(/5\s*(Rechnungen|Belege)/i.test(index), 'free limit of 5 per run not stated');
+});
+
+// ---------------------------------------------------------------- discovery
+// The page went live 2026-08-20 and nothing pointed at it: no sitemap entry,
+// and the store links privacy.html rather than index.html. A page Google has
+// no path to is the same as no page (issue #3). The sub-sitemap pattern is the
+// one /otto/ and /malaysia/ already use on this host.
+const SITEMAP_NS = 'http://www.sitemaps.org/schemas/sitemap/0.9';
+const locs = () => {
+  const xml = read('sitemap.xml');
+  return [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1].trim());
+};
+
+check('sitemap.xml exists and declares the sitemap namespace', () => {
+  assert(existsSync(join(root, 'sitemap.xml')), 'sitemap.xml missing');
+  const xml = read('sitemap.xml');
+  assert(xml.startsWith('<?xml'), 'no XML declaration');
+  assert(xml.includes(SITEMAP_NS), `urlset namespace ${SITEMAP_NS} missing`);
+});
+
+// A sitemap is only honoured for URLs at or below its own path. An entry
+// outside /invoicegrab-site/ is silently ignored, which reads as "submitted".
+check('every sitemap URL sits under the canonical directory', () => {
+  const outside = locs().filter((u) => !u.startsWith(CANONICAL));
+  assert(locs().length > 0, 'sitemap lists no URL at all');
+  assert(outside.length === 0, `outside ${CANONICAL}: ${outside.join(', ')}`);
+});
+
+check('every sitemap URL resolves to a file in this repo', () => {
+  const missing = locs()
+    .map((u) => u.slice(CANONICAL.length))
+    .map((rel) => (rel === '' ? 'index.html' : rel))
+    .filter((rel) => !existsSync(join(root, rel)));
+  assert(missing.length === 0, `listed but not on disk: ${missing.join(', ')}`);
+});
+
+// The guard that keeps working after today: a page added later and forgotten
+// is invisible, and nothing else in the repo would notice.
+check('every HTML page in the repo is listed exactly once', () => {
+  const pages = readdirSync(root).filter((f) => f.endsWith('.html')).sort();
+  const listed = locs().map((u) => (u === CANONICAL ? 'index.html' : u.slice(CANONICAL.length)));
+  const missing = pages.filter((p) => !listed.includes(p));
+  assert(missing.length === 0, `not in sitemap: ${missing.join(', ')}`);
+  const dupes = listed.filter((u, i) => listed.indexOf(u) !== i);
+  assert(dupes.length === 0, `listed twice: ${dupes.join(', ')}`);
+});
+
+// lastmod only helps while it is true. solytics#111 measured that the crawl
+// rhythm follows it, so a date that says "today" for a page untouched since
+// July is worse than none — it teaches the crawler to ignore the signal.
+// Pinned to git rather than to a constant, so it cannot rot in place.
+check('every lastmod equals the file\'s last commit date', () => {
+  const xml = read('sitemap.xml');
+  const entries = [...xml.matchAll(/<url>([\s\S]*?)<\/url>/g)].map((m) => m[1]);
+  assert(entries.length === locs().length, 'not every <loc> sits in a <url> block');
+  for (const e of entries) {
+    const loc = e.match(/<loc>([^<]+)<\/loc>/)[1].trim();
+    const rel = loc === CANONICAL ? 'index.html' : loc.slice(CANONICAL.length);
+    const d = e.match(/<lastmod>(\d{4}-\d{2}-\d{2})<\/lastmod>/);
+    assert(d, `no ISO lastmod for ${rel}`);
+    const committed = execFileSync('git', ['log', '-1', '--format=%cs', '--', rel],
+      { cwd: root, encoding: 'utf8' }).trim();
+    assert(committed, `git cannot date ${rel} — cannot verify lastmod`);
+    assert(d[1] === committed,
+      `lastmod for ${rel} is ${d[1]}, last commit was ${committed}`);
+  }
+});
+
+// robots.txt is read from the host root only; one in this directory would be
+// decoration. jenslaufer.com/robots.txt is 404 today, so nothing blocks us.
+check('no robots.txt pretending to control a subdirectory', () => {
+  assert(!existsSync(join(root, 'robots.txt')),
+    'robots.txt in a subdirectory is never read by a crawler');
 });
 
 console.log(failed === 0 ? '\nall green' : `\n${failed} failed`);
