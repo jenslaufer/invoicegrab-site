@@ -14,8 +14,11 @@ const CANONICAL = 'https://jenslaufer.com/invoicegrab-site/';
 // The Chrome Web Store points its mandatory privacy link at this FILE, not at
 // the directory (measured 2026-08-20 in the served listing HTML). Rebuilding
 // index.html must not touch it, so the file is pinned by hash.
+// Pin moved once, on 2026-08-22 (#5): privacy.html gained two links back to the
+// product page. The store URL is unchanged — the pin went red on purpose, which
+// is what it is for.
 const PRIVACY_SHA256 =
-  '3bef90feaa698b5871bc35f95a10d89fd67b8b5533c630b743365e5a1b8a7ab9';
+  'e9d4b1d6ca26f16b184c24f3c3b80968c7c6e1ead07c2f00b00745965a1d7dad';
 
 let failed = 0;
 const check = (name, fn) => {
@@ -54,6 +57,20 @@ check('canonical points at the directory URL', () => {
 
 check('index.html keeps the privacy link reachable', () => {
   assert(/href=["']\.?\/?privacy\.html["']/.test(index), 'no link to privacy.html');
+});
+
+// Measured 2026-08-22 (GSC): privacy.html indexed, last crawled 14.08.;
+// index.html "URL is unknown to Google", never crawled — same directory,
+// sitemap submitted and read that morning. The difference is one inbound
+// link: the store points at privacy.html, nothing points at index.html.
+// The page that IS crawled must not be a dead end for the crawler.
+check('privacy.html gives the product page a crawl path', () => {
+  const privacy = read('privacy.html');
+  const hrefs = [...privacy.matchAll(/href=["']([^"']+)["']/g)].map((m) => m[1]);
+  const toProduct = hrefs.filter((h) => h === './' || h === '.' || h === 'index.html'
+    || h === './index.html' || h === CANONICAL);
+  assert(toProduct.length > 0,
+    `privacy.html links nowhere on this site (only: ${hrefs.join(', ') || 'none'})`);
 });
 
 check('head basics: lang, viewport, description', () => {
