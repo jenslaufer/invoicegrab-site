@@ -112,6 +112,9 @@ footer a{color:var(--muted)}
 <header class="hero"><div class="wrap">
   <div class="kicker">Chrome-Erweiterung für amazon.de</div>
   <h1>Amazon Rechnungen herunterladen — alle auf einmal</h1>
+  <p class="lead">InvoiceGrab ist eine Chrome-Erweiterung, die alle Rechnungen deiner
+  amazon.de-Bestellungen eines Zeitraums auf einmal als PDF herunterlädt — für alle, die ihre
+  Amazon-Belege für Buchhaltung oder Steuerberater sammeln.</p>
   <p class="lead">Zeitraum wählen, ein Klick: alle Rechnungs-PDFs deiner amazon.de-Bestellungen
   landen als ZIP im Download-Ordner. Benannt nach GoBD-Schema, mit einem CSV-Index, den dein
   Steuerberater direkt lesen kann.</p>
@@ -228,8 +231,7 @@ footer a{color:var(--muted)}
     Version sind es 5 Rechnungen pro Lauf, mit PRO unbegrenzt.</p></details>
 
   <details><summary>Sind die Dateinamen GoBD-konform?</summary>
-    <p>Die Dateien werden nach dem Schema <span class="mono">JJJJ-MM-TT_Bestellnr_Betrag.pdf</span>
-    benannt: chronologisch sortierbar, eindeutig einer Bestellung zugeordnet und ohne manuelles
+    <p>Ja, die Benennung: Die Dateien heißen <span class="mono">JJJJ-MM-TT_Bestellnr_Betrag.pdf</span> — chronologisch sortierbar, eindeutig einer Bestellung zugeordnet und ohne manuelles
     Umbenennen archivierbar. Die GoBD-Konformität deiner Ablage hängt zusätzlich an deinem
     Archivsystem — die Benennung ist der Teil, den InvoiceGrab übernimmt.</p></details>
 
@@ -246,7 +248,7 @@ footer a{color:var(--muted)}
     angemeldet bist. Es gibt kein Login-Feld und keinen Upload.</p></details>
 
   <details><summary>Kann ich die Belege nach DATEV übernehmen?</summary>
-    <p>Im ZIP liegt eine <span class="mono">index.csv</span> mit Belegdatum, Belegnummer, Netto,
+    <p>Ja, über die <span class="mono">index.csv</span> im ZIP. Sie enthält Belegdatum, Belegnummer, Netto,
     USt-Betrag, USt-Satz, Brutto, Währung und Dateiname — die Spalten, die eine Buchungsvorlage
     braucht. Gemischte Steuersätze stehen als Splitbuchung.</p></details>
 
@@ -273,12 +275,14 @@ footer a{color:var(--muted)}
   "name": "InvoiceGrab",
   "description": "Chrome-Erweiterung, die alle Rechnungs-PDFs der eigenen amazon.de-Bestellungen eines Zeitraums als ZIP herunterlädt — GoBD-konform benannt, mit DATEV-tauglichem CSV-Index.",
   "url": "https://jenslaufer.com/invoicegrab-site/",
-  "applicationCategory": "BusinessApplication",
+  "applicationCategory": "BrowserApplication",
   "operatingSystem": "Chrome",
   "inLanguage": "de",
   "softwareVersion": "0.2.0",
   "installUrl": "https://chromewebstore.google.com/detail/gkjglloohfeojkcflpafcahfkabdflom",
-  "author": { "@type": "Person", "name": "Jens Laufer" },
+  "sameAs": ["https://chromewebstore.google.com/detail/gkjglloohfeojkcflpafcahfkabdflom"],
+  "author": { "@type": "Person", "name": "Jens Laufer", "url": "https://jenslaufer.com/" },
+  "publisher": { "@type": "Person", "name": "Jens Laufer", "url": "https://jenslaufer.com/" },
   "offers": [
     { "@type": "Offer", "name": "Free", "price": "0", "priceCurrency": "EUR",
       "description": "5 Rechnungen pro Lauf, dauerhaft kostenlos" },
@@ -298,7 +302,7 @@ footer a{color:var(--muted)}
     { "@type": "Question", "name": "Kann ich alle Amazon-Rechnungen auf einmal herunterladen?",
       "acceptedAnswer": { "@type": "Answer", "text": "Ja. Du wählst einen Zeitraum und InvoiceGrab lädt die Rechnungs-PDFs aller amazon.de-Bestellungen darin in einem Durchgang als ZIP. Kostenlos sind 5 Rechnungen pro Lauf, mit PRO unbegrenzt." } },
     { "@type": "Question", "name": "Sind die Dateinamen GoBD-konform?",
-      "acceptedAnswer": { "@type": "Answer", "text": "Die Dateien heißen JJJJ-MM-TT_Bestellnr_Betrag.pdf — chronologisch sortierbar, eindeutig zugeordnet, ohne manuelles Umbenennen archivierbar." } },
+      "acceptedAnswer": { "@type": "Answer", "text": "Ja, die Benennung: Die Dateien heißen JJJJ-MM-TT_Bestellnr_Betrag.pdf — chronologisch sortierbar, eindeutig zugeordnet, ohne manuelles Umbenennen archivierbar. Die GoBD-Konformität der Ablage hängt zusätzlich am Archivsystem." } },
     { "@type": "Question", "name": "Funktioniert InvoiceGrab mit amazon.com oder anderen Marktplätzen?",
       "acceptedAnswer": { "@type": "Answer", "text": "Nein, unterstützt wird ausschließlich amazon.de. Weitere Marktplätze stehen auf der Roadmap." } },
     { "@type": "Question", "name": "Was passiert mit Bestellungen ohne hinterlegte Rechnung?",
@@ -306,7 +310,9 @@ footer a{color:var(--muted)}
     { "@type": "Question", "name": "Brauche ich meine Amazon-Zugangsdaten?",
       "acceptedAnswer": { "@type": "Answer", "text": "Nein. InvoiceGrab läuft im Browser in der Sitzung, in der du ohnehin angemeldet bist. Es gibt kein Login-Feld und keinen Upload." } },
     { "@type": "Question", "name": "Kann ich die Belege nach DATEV übernehmen?",
-      "acceptedAnswer": { "@type": "Answer", "text": "Im ZIP liegt eine index.csv mit Belegdatum, Belegnummer, Netto, USt-Betrag, USt-Satz, Brutto, Währung und Dateiname. Gemischte Steuersätze stehen als Splitbuchung." } }
+      "acceptedAnswer": { "@type": "Answer", "text": "Ja, über die index.csv im ZIP. Sie enthält Belegdatum, Belegnummer, Netto, USt-Betrag, USt-Satz, Brutto, Währung und Dateiname. Gemischte Steuersätze stehen als Splitbuchung." } },
+    { "@type": "Question", "name": "Was kostet InvoiceGrab?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Die kostenlose Version bleibt dauerhaft kostenlos und lädt 5 Rechnungen pro Lauf. PRO kostet 19 €/Jahr oder 3 €/Monat und hebt die Begrenzung auf." } }
   ]
 }
 </script>
