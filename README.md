@@ -1,14 +1,16 @@
 # invoicegrab-site
 
 Static site for the InvoiceGrab Chrome extension, served by GitHub Pages from
-`master` at <https://jenslaufer.com/invoicegrab-site/>.
+`master` at <https://invoicegrab.de/> (`CNAME`; since 2026-11-24). GitHub Pages
+redirects the old `jenslaufer.com/invoicegrab-site/…` paths there with a 301.
 
 | File | Purpose |
 |---|---|
 | `index.html` | Product page — the only surface outside the Chrome Web Store where someone can be convinced |
 | `privacy.html` | **The privacy policy the Chrome Web Store listing links to.** The store points at this FILE (`…/invoicegrab-site/privacy.html`), not at the directory — measured 2026-08-20 in the served listing HTML. Renaming or removing it tears off a mandatory listing link |
-| `sitemap.xml` | **The only discovery path Google has to this page.** Nothing links to `index.html` — the store listing points at `privacy.html`. Submitted separately in the Search Console, the same way `/otto/` and `/malaysia/` are. A sitemap under a subdirectory may only list URLs below it; entries outside are ignored without a word |
+| `sitemap.xml` | **The only discovery path Google has to this page.** Nothing links to `index.html` — the store listing points at `privacy.html`. Named in `robots.txt`; the `invoicegrab.de` property in the Search Console still has to be added |
 | `llms.txt`, `index.md`, `faq.md` | Plain-text copies for LLMs and AI agents ([llmstxt.org](https://llmstxt.org)). Keep in sync with `index.html`; tests guard prices and FAQ questions. LLMs look for `llms.txt` at the host root, so this one is found only by link: `index.html` announces `index.md` as `<link rel="alternate" type="text/markdown">` and links `llms.txt` and `faq.md` in the footer |
+| `CNAME`, `robots.txt` | Bind Pages to `invoicegrab.de`; crawl rules for the host root |
 | `.nojekyll` | Stops GitHub Pages' Jekyll from rendering `index.md` over `index.html` |
 | `img/` | Screenshots (WebP, from `invoicegrab/store/screenshots/`), icon, OG image |
 | `tests/site.test.mjs` | Guards, run with `node tests/site.test.mjs` |
@@ -36,9 +38,8 @@ They hold three things that cost money when they break:
    crawl rhythm follows `<lastmod>`, so one that says "today" for a page
    untouched since July is worse than none.
 
-There is deliberately **no `robots.txt`** — crawlers read it only from the host
-root, so one here would be decoration. `jenslaufer.com/robots.txt` is 404, which
-allows everything.
+`robots.txt` allows everything and names the sitemap. It only works because this
+directory is now the host root of `invoicegrab.de`.
 
 ## Assets
 

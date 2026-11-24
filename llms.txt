@@ -6,10 +6,10 @@ InvoiceGrab läuft im Browser in der bestehenden Amazon-Sitzung: keine Zugangsda
 
 ## Seiten
 
-- [Produktseite](https://jenslaufer.com/invoicegrab-site/index.md): Funktionen, Ablauf, Preis, Datenschutz
-- [Häufige Fragen](https://jenslaufer.com/invoicegrab-site/faq.md): alle Rechnungen auf einmal, GoBD-Dateinamen, DATEV, Marktplätze, Preis
+- [Produktseite](https://invoicegrab.de/index.md): Funktionen, Ablauf, Preis, Datenschutz
+- [Häufige Fragen](https://invoicegrab.de/faq.md): alle Rechnungen auf einmal, GoBD-Dateinamen, DATEV, Marktplätze, Preis
 
 ## Optional
 
 - [Chrome Web Store](https://chromewebstore.google.com/detail/gkjglloohfeojkcflpafcahfkabdflom): Installation
-- [Datenschutzerklärung](https://jenslaufer.com/invoicegrab-site/privacy.html)
+- [Datenschutzerklärung](https://invoicegrab.de/privacy.html)
