@@ -28,4 +28,4 @@ Ja, über die `index.csv` im ZIP. Sie enthält Belegdatum, Belegnummer, Netto, U
 
 ## Was kostet InvoiceGrab?
 
-Die kostenlose Version bleibt dauerhaft kostenlos und lädt 5 Rechnungen pro Lauf. PRO kostet 19 €/Jahr oder 3 €/Monat und hebt die Begrenzung auf.
+Die kostenlose Version bleibt dauerhaft kostenlos und lädt 5 Rechnungen pro Lauf. PRO kostet 19 €/Jahr und hebt die Begrenzung auf.

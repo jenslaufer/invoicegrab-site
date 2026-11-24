@@ -25,8 +25,9 @@ const OLD_BASE = 'jenslaufer.com/invoicegrab-site';
 // description and a canonical in <head>. Path and body text are unchanged.
 // And on 2026-11-24 (own domain): the canonical moved to invoicegrab.de. The store's
 // …/invoicegrab-site/privacy.html link reaches the same file via the Pages 301.
+// And on 2026-11-24 (Impressum): controller is Solytics GmbH, hosting section, Impressum link.
 const PRIVACY_SHA256 =
-  'e899e0e0063a57b461c0ed7e13e62c6e57ade9b2f90ae3f240138d7b7a3dc3c8';
+  '5e33ea76edc009d8ab5e2e1cd21d40badf326d7d759e5d1559984a14ed9efb33';
 
 let failed = 0;
 const check = (name, fn) => {
@@ -110,14 +111,23 @@ check('structured data parses and declares the right types', () => {
 
 // The PlaylistGrab lesson (2026-08-19): its store text promised a price that
 // the checkout never sold. Any money figure on this page must be one that
-// ExtPay actually offers for invoicegrab — 19 EUR/year or 3 EUR/month.
+// ExtPay actually offers for invoicegrab. Since 2026-11-03 that is 19 EUR/year only:
+// the 3 EUR/month plan is archived (invoicegrab/store/listing.md, paywall-health-check
+// 2026-11-24 "Plan 'month' fehlt"). The site kept selling it for three weeks.
+const SOLD = ['19'];
 check('no price on the page that ExtPay does not sell', () => {
   const text = index.replace(/<[^>]+>/g, ' ');
   const found = [...text.matchAll(/(\d+(?:[.,]\d+)?)\s*(?:€|EUR|USD|\$)/gi)].map((m) => m[1]);
-  const allowed = new Set(['19', '3']);
-  const wrong = found.filter((f) => !allowed.has(f));
+  const wrong = found.filter((f) => !SOLD.includes(f));
   assert(wrong.length === 0, `prices not sold by ExtPay: ${wrong.join(', ')}`);
-  assert(found.includes('19') && found.includes('3'), `both plans must be named, found: ${found.join(', ')}`);
+  assert(found.includes('19'), `yearly plan must be named, found: ${found.join(', ')}`);
+});
+
+check('no monthly plan promised anywhere', () => {
+  for (const f of ['index.html', 'index.md', 'faq.md', 'llms.txt']) {
+    assert(!/€\s*\/\s*Monat|monatlich|pro Monat\b(?! Bestellungen)/i.test(read(f).replace(/zeigt pro Monat Bestellungen/g, '')),
+      `${f} still offers a monthly plan`);
+  }
 });
 
 check('free tier is stated as shipped (5 per run)', () => {
@@ -234,17 +244,17 @@ check('SoftwareApplication points at the store listing via sameAs', () => {
   assert(same.includes(STORE_URL), `sameAs lacks ${STORE_URL}: ${same.join(', ')}`);
 });
 
-check('author and publisher name the same Person', () => {
+// The seller is Solytics GmbH (Jens, 2026-11-24): publisher = the company in the Impressum.
+check('publisher is Solytics GmbH, author is a Person', () => {
   const { author, publisher } = app();
-  assert(publisher, 'publisher missing');
-  assert(author['@type'] === 'Person' && publisher['@type'] === 'Person',
-    'author and publisher must both be Person');
-  assert(author.name === publisher.name, `${author.name} != ${publisher.name}`);
+  assert(author && author['@type'] === 'Person', 'author must be a Person');
+  assert(publisher && publisher['@type'] === 'Organization', 'publisher must be an Organization');
+  assert(publisher.name === 'Solytics GmbH', `publisher is ${publisher.name}`);
 });
 
 check('JSON-LD offers carry only the prices ExtPay sells', () => {
   const prices = app().offers.map((o) => o.price).sort();
-  assert(JSON.stringify(prices) === JSON.stringify(['0', '19', '3']),
+  assert(JSON.stringify(prices) === JSON.stringify(['0', ...SOLD]),
     `offer prices: ${prices.join(', ')}`);
   assert(app().offers.every((o) => o.priceCurrency === 'EUR'), 'currency not EUR');
 });
@@ -293,11 +303,10 @@ check('llms.txt: H1, one-line blockquote, links to existing .md copies', () => {
 check('Markdown copies name only prices ExtPay sells', () => {
   for (const f of ['llms.txt', 'index.md', 'faq.md']) {
     const found = [...read(f).matchAll(/(\d+(?:[.,]\d+)?)\s*(?:€|EUR|USD|\$)/gi)].map((m) => m[1]);
-    const wrong = found.filter((x) => !['19', '3'].includes(x));
+    const wrong = found.filter((x) => !SOLD.includes(x));
     assert(wrong.length === 0, `${f}: prices not sold by ExtPay: ${wrong.join(', ')}`);
   }
-  assert(/19\s*€/.test(read('index.md')) && /3\s*€/.test(read('index.md')),
-    'index.md must name both plans');
+  assert(/19\s*€/.test(read('index.md')), 'index.md must name the yearly plan');
 });
 
 check('faq.md answers every FAQ question of the page', () => {
@@ -338,6 +347,36 @@ check('index.html footer links llms.txt and faq.md', () => {
     assert(hrefs.includes(want), `footer does not link ${want} (only: ${hrefs.join(', ')})`);
     assert(existsSync(join(root, want)), `${want} missing on disk`);
   }
+});
+
+// ------------------------------------------------------------ Impressum
+// The site sells (PRO via ExtPay), so § 5 DDG applies. Seller is Solytics GmbH
+// (Jens, 2026-11-24) — same data as bieterpost-site/impressum.html.
+check('impressum.html names Solytics GmbH with the § 5 DDG data', () => {
+  assert(existsSync(join(root, 'impressum.html')), 'impressum.html missing');
+  const imp = read('impressum.html');
+  for (const want of ['§ 5 DDG', 'Solytics GmbH', 'Hörsteiner Str. 20a', '63791 Karlstein a. Main',
+    'HRB 16879', 'Amtsgericht Aschaffenburg', 'jens.laufer@solytics.de', 'Geschäftsführer']) {
+    assert(imp.includes(want), `impressum.html lacks "${want}"`);
+  }
+});
+
+check('index.html and privacy.html link the Impressum', () => {
+  for (const f of ['index.html', 'privacy.html']) {
+    assert(/href=["']\.?\/?impressum\.html["']/.test(read(f)), `${f} has no Impressum link`);
+  }
+});
+
+check('privacy.html names Solytics GmbH as controller, no private mail', () => {
+  assert(privacy.includes('Solytics GmbH'), 'Solytics GmbH missing in privacy.html');
+  assert(privacy.includes('jens.laufer@solytics.de'), 'business contact missing');
+  for (const f of ['index.html', 'privacy.html']) {
+    assert(!read(f).includes('jenslaufer@gmail.com'), `${f} still shows the private Gmail`);
+  }
+});
+
+check('privacy.html covers the website hosting (GitHub Pages logs)', () => {
+  assert(/GitHub Pages/.test(privacy) && /IP-Adresse/.test(privacy), 'hosting/log section missing');
 });
 
 console.log(failed === 0 ? '\nall green' : `\n${failed} failed`);
