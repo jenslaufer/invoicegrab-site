@@ -295,5 +295,31 @@ check('.nojekyll keeps Pages from rendering the .md copies', () => {
   assert(existsSync(join(root, '.nojekyll')), '.nojekyll missing');
 });
 
+// llms.txt and the .md copies sat unlinked after the ai-visibility pass (gate
+// review of #7): no page pointed at them, the sitemap lists HTML only, and
+// LLMs look for llms.txt at the host root, not here. A link is the only path.
+const localTarget = (href) => href.replace(/^\.?\//, '').split(/[?#]/)[0];
+
+check('index.html head announces the Markdown copy as rel=alternate', () => {
+  const head = index.split(/<\/head>/i)[0];
+  const m = head.match(/<link[^>]+rel=["']alternate["'][^>]+type=["']text\/markdown["'][^>]*>/i);
+  assert(m, 'no <link rel="alternate" type="text/markdown"> in <head>');
+  const href = m[0].match(/href=["']([^"']+)["']/)[1];
+  assert(localTarget(href) === 'index.md', `alternate points at ${href}, not index.md`);
+  assert(new URL(href, CANONICAL).href === `${CANONICAL}index.md`,
+    `resolves to ${new URL(href, CANONICAL).href}`);
+  assert(existsSync(join(root, 'index.md')), 'index.md missing');
+});
+
+check('index.html footer links llms.txt and faq.md', () => {
+  const footer = index.match(/<footer[\s\S]*?<\/footer>/i);
+  assert(footer, 'no <footer>');
+  const hrefs = [...footer[0].matchAll(/href=["']([^"']+)["']/g)].map((m) => localTarget(m[1]));
+  for (const want of ['llms.txt', 'faq.md']) {
+    assert(hrefs.includes(want), `footer does not link ${want} (only: ${hrefs.join(', ')})`);
+    assert(existsSync(join(root, want)), `${want} missing on disk`);
+  }
+});
+
 console.log(failed === 0 ? '\nall green' : `\n${failed} failed`);
 process.exit(failed === 0 ? 0 : 1);
