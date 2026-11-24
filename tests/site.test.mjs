@@ -17,8 +17,10 @@ const CANONICAL = 'https://jenslaufer.com/invoicegrab-site/';
 // Pin moved once, on 2026-08-22 (#5): privacy.html gained two links back to the
 // product page. The store URL is unchanged — the pin went red on purpose, which
 // is what it is for.
+// Moved again on 2026-11-24 (ai-visibility): privacy.html gained a meta
+// description and a canonical in <head>. Path and body text are unchanged.
 const PRIVACY_SHA256 =
-  'e9d4b1d6ca26f16b184c24f3c3b80968c7c6e1ead07c2f00b00745965a1d7dad';
+  '337ce0fa60ee27cb893a94792308d19f6448d3684ebdf56bdf515497c0d46b94';
 
 let failed = 0;
 const check = (name, fn) => {
@@ -187,6 +189,103 @@ check('every lastmod equals the file\'s last commit date', () => {
 check('no robots.txt pretending to control a subdirectory', () => {
   assert(!existsSync(join(root, 'robots.txt')),
     'robots.txt in a subdirectory is never read by a crawler');
+});
+
+// ------------------------------------------------------------ AI visibility
+// LLM search (ChatGPT via Bing/OAI-SearchBot, Claude via Brave, Perplexity)
+// quotes what it can parse: JSON-LD, a description per page, plain Markdown.
+// Added 2026-11-24 with the ai-visibility pass.
+const privacy = read('privacy.html');
+const ldBlocks = () => [...index.matchAll(
+  /<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)]
+  .map((m) => JSON.parse(m[1]));
+const app = () => ldBlocks().find((b) => b['@type'] === 'SoftwareApplication');
+const STORE_URL = `https://chromewebstore.google.com/detail/${STORE_ID}`;
+
+check('SoftwareApplication is typed as a Chrome browser extension', () => {
+  const a = app();
+  assert(a.applicationCategory === 'BrowserApplication',
+    `applicationCategory is ${a.applicationCategory}`);
+  assert(a.operatingSystem === 'Chrome', `operatingSystem is ${a.operatingSystem}`);
+  assert(a.url === CANONICAL, `url is ${a.url}`);
+});
+
+check('SoftwareApplication points at the store listing via sameAs', () => {
+  const same = [].concat(app().sameAs || []);
+  assert(same.includes(STORE_URL), `sameAs lacks ${STORE_URL}: ${same.join(', ')}`);
+});
+
+check('author and publisher name the same Person', () => {
+  const { author, publisher } = app();
+  assert(publisher, 'publisher missing');
+  assert(author['@type'] === 'Person' && publisher['@type'] === 'Person',
+    'author and publisher must both be Person');
+  assert(author.name === publisher.name, `${author.name} != ${publisher.name}`);
+});
+
+check('JSON-LD offers carry only the prices ExtPay sells', () => {
+  const prices = app().offers.map((o) => o.price).sort();
+  assert(JSON.stringify(prices) === JSON.stringify(['0', '19', '3']),
+    `offer prices: ${prices.join(', ')}`);
+  assert(app().offers.every((o) => o.priceCurrency === 'EUR'), 'currency not EUR');
+});
+
+// The FAQPage block is what search engines and LLMs read; the <details> are
+// what people read. They must ask the same questions.
+check('FAQPage JSON-LD mirrors the visible FAQ', () => {
+  const faq = ldBlocks().find((b) => b['@type'] === 'FAQPage');
+  const ld = faq.mainEntity.map((q) => q.name);
+  const html = [...index.matchAll(/<summary>([^<]+)<\/summary>/g)].map((m) => m[1].trim());
+  assert(JSON.stringify(ld) === JSON.stringify(html),
+    `JSON-LD: ${ld.join(' | ')}\n     HTML: ${html.join(' | ')}`);
+});
+
+check('privacy.html has a description and its own canonical', () => {
+  const d = privacy.match(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']+)["']/i);
+  assert(d, 'meta description missing');
+  assert(d[1].length <= 160, `description is ${d[1].length} chars (max 160)`);
+  const c = privacy.match(/<link[^>]+rel=["']canonical["'][^>]*>/i);
+  assert(c && c[0].includes(`${CANONICAL}privacy.html`), `canonical wrong: ${c && c[0]}`);
+});
+
+// llms.txt spec (llmstxt.org): H1 name, blockquote summary, link list.
+check('llms.txt: H1, one-line blockquote, links to existing .md copies', () => {
+  assert(existsSync(join(root, 'llms.txt')), 'llms.txt missing');
+  const lines = read('llms.txt').split('\n');
+  assert(lines[0] === '# InvoiceGrab', `first line is "${lines[0]}"`);
+  const quote = lines.filter((l) => l.startsWith('> '));
+  assert(quote.length === 1, `expected one blockquote line, got ${quote.length}`);
+  const links = [...read('llms.txt').matchAll(/\]\(([^)]+)\)/g)].map((m) => m[1]);
+  const md = links.filter((l) => l.endsWith('.md'));
+  for (const want of ['index.md', 'faq.md']) {
+    assert(md.includes(CANONICAL + want), `llms.txt does not link ${CANONICAL}${want}`);
+  }
+  const outside = links.filter((l) => l.startsWith('https://jenslaufer.com/')
+    && !l.startsWith(CANONICAL));
+  assert(outside.length === 0, `links outside the site: ${outside.join(', ')}`);
+  const missing = links.filter((l) => l.startsWith(CANONICAL))
+    .map((l) => l.slice(CANONICAL.length) || 'index.html')
+    .filter((f) => !existsSync(join(root, f)));
+  assert(missing.length === 0, `linked but not on disk: ${missing.join(', ')}`);
+});
+
+// Same guard as for index.html: a Markdown copy may not promise a price the
+// checkout never sells, and must not drift from the HTML on the plans.
+check('Markdown copies name only prices ExtPay sells', () => {
+  for (const f of ['llms.txt', 'index.md', 'faq.md']) {
+    const found = [...read(f).matchAll(/(\d+(?:[.,]\d+)?)\s*(?:€|EUR|USD|\$)/gi)].map((m) => m[1]);
+    const wrong = found.filter((x) => !['19', '3'].includes(x));
+    assert(wrong.length === 0, `${f}: prices not sold by ExtPay: ${wrong.join(', ')}`);
+  }
+  assert(/19\s*€/.test(read('index.md')) && /3\s*€/.test(read('index.md')),
+    'index.md must name both plans');
+});
+
+check('faq.md answers every FAQ question of the page', () => {
+  const faq = read('faq.md');
+  const html = [...index.matchAll(/<summary>([^<]+)<\/summary>/g)].map((m) => m[1].trim());
+  const missing = html.filter((q) => !faq.includes(`## ${q}`));
+  assert(missing.length === 0, `faq.md lacks: ${missing.join(' | ')}`);
 });
 
 console.log(failed === 0 ? '\nall green' : `\n${failed} failed`);
