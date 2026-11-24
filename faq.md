@@ -1,6 +1,6 @@
 # InvoiceGrab — Häufige Fragen
 
-InvoiceGrab ist eine Chrome-Erweiterung, die alle Rechnungen deiner amazon.de-Bestellungen eines Zeitraums auf einmal als PDF herunterlädt. Produktseite: https://jenslaufer.com/invoicegrab-site/
+InvoiceGrab ist eine Chrome-Erweiterung, die alle Rechnungen deiner amazon.de-Bestellungen eines Zeitraums auf einmal als PDF herunterlädt. Produktseite: https://invoicegrab.de/
 
 ## Kann ich alle Amazon-Rechnungen auf einmal herunterladen?
 

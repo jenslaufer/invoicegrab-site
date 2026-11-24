@@ -10,7 +10,11 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (f) => readFileSync(join(root, f), 'utf8');
 
 const STORE_ID = 'gkjglloohfeojkcflpafcahfkabdflom';
-const CANONICAL = 'https://jenslaufer.com/invoicegrab-site/';
+// Own domain since 2026-11-24 (#230): as a subpath of jenslaufer.com, search engines and
+// LLMs barely saw InvoiceGrab as a product of its own; robots.txt and llms.txt only count
+// at a host root. GitHub Pages redirects the old /invoicegrab-site/ paths here (301).
+const CANONICAL = 'https://invoicegrab.de/';
+const OLD_BASE = 'jenslaufer.com/invoicegrab-site';
 // The Chrome Web Store points its mandatory privacy link at this FILE, not at
 // the directory (measured 2026-08-20 in the served listing HTML). Rebuilding
 // index.html must not touch it, so the file is pinned by hash.
@@ -19,8 +23,10 @@ const CANONICAL = 'https://jenslaufer.com/invoicegrab-site/';
 // is what it is for.
 // Moved again on 2026-11-24 (ai-visibility): privacy.html gained a meta
 // description and a canonical in <head>. Path and body text are unchanged.
+// And on 2026-11-24 (own domain): the canonical moved to invoicegrab.de. The store's
+// …/invoicegrab-site/privacy.html link reaches the same file via the Pages 301.
 const PRIVACY_SHA256 =
-  '337ce0fa60ee27cb893a94792308d19f6448d3684ebdf56bdf515497c0d46b94';
+  'e899e0e0063a57b461c0ed7e13e62c6e57ade9b2f90ae3f240138d7b7a3dc3c8';
 
 let failed = 0;
 const check = (name, fn) => {
@@ -184,11 +190,24 @@ check('every lastmod equals the file\'s last commit date', () => {
   }
 });
 
-// robots.txt is read from the host root only; one in this directory would be
-// decoration. jenslaufer.com/robots.txt is 404 today, so nothing blocks us.
-check('no robots.txt pretending to control a subdirectory', () => {
-  assert(!existsSync(join(root, 'robots.txt')),
-    'robots.txt in a subdirectory is never read by a crawler');
+// robots.txt is read from the host root only — on the own domain this directory IS the root.
+check('robots.txt at the host root allows crawling and names the sitemap', () => {
+  assert(existsSync(join(root, 'robots.txt')), 'robots.txt missing');
+  const r = read('robots.txt');
+  assert(/^User-agent:\s*\*\s*$/m.test(r), 'no User-agent: *');
+  assert(!/^Disallow:\s*\/\s*$/m.test(r), 'robots.txt blocks the whole site');
+  assert(r.includes(`Sitemap: ${CANONICAL}sitemap.xml`), 'no Sitemap line for the canonical sitemap');
+});
+
+check('CNAME binds GitHub Pages to the canonical host', () => {
+  assert(existsSync(join(root, 'CNAME')), 'CNAME missing');
+  assert(read('CNAME').trim() === new URL(CANONICAL).host, `CNAME is ${read('CNAME').trim()}`);
+});
+
+check('no served file points at the old subpath URL', () => {
+  const served = readdirSync(root).filter((f) => /\.(html|md|txt|xml)$/.test(f) && f !== 'README.md');
+  const stale = served.filter((f) => read(f).includes(OLD_BASE));
+  assert(stale.length === 0, `old URL in: ${stale.join(', ')}`);
 });
 
 // ------------------------------------------------------------ AI visibility
