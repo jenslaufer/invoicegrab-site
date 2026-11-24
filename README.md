@@ -8,6 +8,8 @@ Static site for the InvoiceGrab Chrome extension, served by GitHub Pages from
 | `index.html` | Product page — the only surface outside the Chrome Web Store where someone can be convinced |
 | `privacy.html` | **The privacy policy the Chrome Web Store listing links to.** The store points at this FILE (`…/invoicegrab-site/privacy.html`), not at the directory — measured 2026-08-20 in the served listing HTML. Renaming or removing it tears off a mandatory listing link |
 | `sitemap.xml` | **The only discovery path Google has to this page.** Nothing links to `index.html` — the store listing points at `privacy.html`. Submitted separately in the Search Console, the same way `/otto/` and `/malaysia/` are. A sitemap under a subdirectory may only list URLs below it; entries outside are ignored without a word |
+| `llms.txt`, `index.md`, `faq.md` | Plain-text copies for LLMs and AI agents ([llmstxt.org](https://llmstxt.org)). Keep in sync with `index.html`; tests guard prices and FAQ questions. LLMs look for `llms.txt` at the host root, so this one is found only by link |
+| `.nojekyll` | Stops GitHub Pages' Jekyll from rendering `index.md` over `index.html` |
 | `img/` | Screenshots (WebP, from `invoicegrab/store/screenshots/`), icon, OG image |
 | `tests/site.test.mjs` | Guards, run with `node tests/site.test.mjs` |
 

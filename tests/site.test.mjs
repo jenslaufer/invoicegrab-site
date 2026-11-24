@@ -288,5 +288,12 @@ check('faq.md answers every FAQ question of the page', () => {
   assert(missing.length === 0, `faq.md lacks: ${missing.join(' | ')}`);
 });
 
+// GitHub Pages runs Jekyll with jekyll-optional-front-matter by default: it
+// would render index.md to index.html (clobbering the product page) and serve
+// no raw Markdown at all. .nojekyll serves every file as-is.
+check('.nojekyll keeps Pages from rendering the .md copies', () => {
+  assert(existsSync(join(root, '.nojekyll')), '.nojekyll missing');
+});
+
 console.log(failed === 0 ? '\nall green' : `\n${failed} failed`);
 process.exit(failed === 0 ? 0 : 1);
