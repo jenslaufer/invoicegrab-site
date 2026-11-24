@@ -2,7 +2,7 @@
 
 > Chrome-Erweiterung, die alle Rechnungs-PDFs der eigenen amazon.de-Bestellungen eines Zeitraums auf einmal als ZIP herunterlädt — GoBD-konform benannt, mit DATEV-tauglichem CSV-Index.
 
-InvoiceGrab läuft im Browser in der bestehenden Amazon-Sitzung: keine Zugangsdaten, kein Upload, kein Server. Unterstützt wird ausschließlich amazon.de. Kostenlos: 5 Rechnungen pro Lauf. PRO: 19 €/Jahr oder 3 €/Monat, unbegrenzt.
+InvoiceGrab läuft im Browser in der bestehenden Amazon-Sitzung: keine Zugangsdaten, kein Upload, kein Server. Unterstützt wird ausschließlich amazon.de. Kostenlos: 5 Rechnungen pro Lauf. PRO: 19 €/Jahr, unbegrenzt.
 
 ## Seiten
 
@@ -13,3 +13,4 @@ InvoiceGrab läuft im Browser in der bestehenden Amazon-Sitzung: keine Zugangsda
 
 - [Chrome Web Store](https://chromewebstore.google.com/detail/gkjglloohfeojkcflpafcahfkabdflom): Installation
 - [Datenschutzerklärung](https://invoicegrab.de/privacy.html)
+- [Impressum](https://invoicegrab.de/impressum.html): Solytics GmbH

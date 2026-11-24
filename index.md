@@ -5,7 +5,7 @@ InvoiceGrab ist eine Chrome-Erweiterung, die alle Rechnungen deiner amazon.de-Be
 Zeitraum wählen, ein Klick: alle Rechnungs-PDFs deiner amazon.de-Bestellungen landen als ZIP im Download-Ordner. Benannt nach GoBD-Schema, mit einem CSV-Index, den dein Steuerberater direkt lesen kann.
 
 - Installieren: [Chrome Web Store](https://chromewebstore.google.com/detail/gkjglloohfeojkcflpafcahfkabdflom)
-- Kostenlos: 5 Rechnungen pro Lauf. PRO 19 €/Jahr oder 3 €/Monat.
+- Kostenlos: 5 Rechnungen pro Lauf. PRO 19 €/Jahr.
 - Läuft in deinem Browser mit deiner bestehenden Amazon-Anmeldung — keine Zugangsdaten, kein Upload, kein Server.
 
 ## Von Hand vs. mit InvoiceGrab
@@ -26,7 +26,7 @@ Mit InvoiceGrab: Symbol anklicken, Zeitraum wählen, „Rechnungen als ZIP laden
 | Plan | Preis | Umfang |
 |---|---|---|
 | Free | kostenlos, dauerhaft, ohne Konto | 5 Rechnungen pro Lauf, GoBD-Dateinamen und `index.csv` |
-| Pro | 19 €/Jahr oder 3 €/Monat | unbegrenzt Rechnungen pro Lauf, ganze Jahre in einem Durchgang; Zahlung über ExtensionPay/Stripe |
+| Pro | 19 €/Jahr | unbegrenzt Rechnungen pro Lauf, ganze Jahre in einem Durchgang; Zahlung über ExtensionPay/Stripe |
 
 ## Datenschutz
 
@@ -36,6 +36,6 @@ InvoiceGrab hat keinen Server. Der Lauf passiert im Browser, in deiner bereits a
 - **downloads** — legt das fertige ZIP im Download-Ordner ab
 - **www.amazon.de** — liest während eines Laufs deine eigenen Bestell- und Rechnungsseiten. Keine anderen Websites.
 
-[Datenschutzerklärung](https://invoicegrab.de/privacy.html) · [Häufige Fragen](https://invoicegrab.de/faq.md)
+[Datenschutzerklärung](https://invoicegrab.de/privacy.html) · [Impressum](https://invoicegrab.de/impressum.html) · [Häufige Fragen](https://invoicegrab.de/faq.md)
 
-Von Jens Laufer · jenslaufer@gmail.com
+Von der Solytics GmbH · jens.laufer@solytics.de

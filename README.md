@@ -8,6 +8,7 @@ redirects the old `jenslaufer.com/invoicegrab-site/…` paths there with a 301.
 |---|---|
 | `index.html` | Product page — the only surface outside the Chrome Web Store where someone can be convinced |
 | `privacy.html` | **The privacy policy the Chrome Web Store listing links to.** The store points at this FILE (`…/invoicegrab-site/privacy.html`), not at the directory — measured 2026-08-20 in the served listing HTML. Renaming or removing it tears off a mandatory listing link |
+| `impressum.html` | Impressum (§ 5 DDG) — seller is Solytics GmbH, same data as `bieterpost-site/impressum.html` |
 | `sitemap.xml` | **The only discovery path Google has to this page.** Nothing links to `index.html` — the store listing points at `privacy.html`. Named in `robots.txt`; the `invoicegrab.de` property in the Search Console still has to be added |
 | `llms.txt`, `index.md`, `faq.md` | Plain-text copies for LLMs and AI agents ([llmstxt.org](https://llmstxt.org)). Keep in sync with `index.html`; tests guard prices and FAQ questions. LLMs look for `llms.txt` at the host root, so this one is found only by link: `index.html` announces `index.md` as `<link rel="alternate" type="text/markdown">` and links `llms.txt` and `faq.md` in the footer |
 | `CNAME`, `robots.txt` | Bind Pages to `invoicegrab.de`; crawl rules for the host root |
@@ -27,8 +28,8 @@ They hold three things that cost money when they break:
 
 1. `privacy.html` is pinned by sha256, so a page rebuild cannot silently move
    the store's privacy link.
-2. Every price on the page must be one ExtPay actually sells (19 €/year,
-   3 €/month). PlaylistGrab shipped a store text on 2026-08-19 promising a price
+2. Every price on the page must be one ExtPay actually sells (19 €/year only;
+   the 3 €/month plan is archived since 2026-11-03). PlaylistGrab shipped a store text on 2026-08-19 promising a price
    its checkout never offered; this is the guard against repeating it.
 3. Canonical, description, store link and local assets exist — a page Google
    cannot index is the same as no page.
