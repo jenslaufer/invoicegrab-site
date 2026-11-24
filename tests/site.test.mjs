@@ -125,7 +125,7 @@ check('no price on the page that ExtPay does not sell', () => {
 
 check('no monthly plan promised anywhere', () => {
   for (const f of ['index.html', 'index.md', 'faq.md', 'llms.txt']) {
-    assert(!/€\s*\/\s*Monat|monatlich|pro Monat\b(?! Bestellungen)/i.test(read(f).replace(/zeigt pro Monat Bestellungen/g, '')),
+    assert(!/€\s*\/\s*Monat|monatlich|pro Monat\b/i.test(read(f).replace(/zeigt pro Monat Bestellungen/g, '')),
       `${f} still offers a monthly plan`);
   }
 });
@@ -370,7 +370,7 @@ check('index.html and privacy.html link the Impressum', () => {
 check('privacy.html names Solytics GmbH as controller, no private mail', () => {
   assert(privacy.includes('Solytics GmbH'), 'Solytics GmbH missing in privacy.html');
   assert(privacy.includes('jens.laufer@solytics.de'), 'business contact missing');
-  for (const f of ['index.html', 'privacy.html']) {
+  for (const f of ['index.html', 'privacy.html', 'impressum.html', 'index.md', 'faq.md', 'llms.txt']) {
     assert(!read(f).includes('jenslaufer@gmail.com'), `${f} still shows the private Gmail`);
   }
 });

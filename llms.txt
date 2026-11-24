@@ -13,3 +13,4 @@ InvoiceGrab läuft im Browser in der bestehenden Amazon-Sitzung: keine Zugangsda
 
 - [Chrome Web Store](https://chromewebstore.google.com/detail/gkjglloohfeojkcflpafcahfkabdflom): Installation
 - [Datenschutzerklärung](https://invoicegrab.de/privacy.html)
+- [Impressum](https://invoicegrab.de/impressum.html): Solytics GmbH

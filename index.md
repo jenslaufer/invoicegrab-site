@@ -36,6 +36,6 @@ InvoiceGrab hat keinen Server. Der Lauf passiert im Browser, in deiner bereits a
 - **downloads** — legt das fertige ZIP im Download-Ordner ab
 - **www.amazon.de** — liest während eines Laufs deine eigenen Bestell- und Rechnungsseiten. Keine anderen Websites.
 
-[Datenschutzerklärung](https://invoicegrab.de/privacy.html) · [Häufige Fragen](https://invoicegrab.de/faq.md)
+[Datenschutzerklärung](https://invoicegrab.de/privacy.html) · [Impressum](https://invoicegrab.de/impressum.html) · [Häufige Fragen](https://invoicegrab.de/faq.md)
 
-Von Jens Laufer · jenslaufer@gmail.com
+Von der Solytics GmbH · jens.laufer@solytics.de
