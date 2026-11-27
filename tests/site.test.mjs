@@ -330,6 +330,37 @@ check('the homepage links every other content page', () => {
   assert(orphans.length === 0, `not linked from index.html: ${orphans.join(', ')}`);
 });
 
+// Ratgeber (2026-11-27, Jens: blog format): one static article per sub-intent, listed on
+// ratgeber.html. Articles carry author and date like the guides they compete with.
+const ARTICLES = () => contentPages().filter((f) => !['index.html', 'ratgeber.html'].includes(f));
+const MONTHS = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August',
+  'September', 'Oktober', 'November', 'Dezember'];
+
+check('ratgeber.html exists, links every article, and the homepage links it', () => {
+  assert(existsSync(join(root, 'ratgeber.html')), 'ratgeber.html missing');
+  const r = read('ratgeber.html');
+  for (const f of ARTICLES()) assert(new RegExp(`href=["']\\.?/?${f}["']`).test(r), `ratgeber.html does not link ${f}`);
+  assert(/href=["']\.?\/?ratgeber\.html["']/.test(index), 'index.html does not link ratgeber.html');
+});
+
+check('every article: Article JSON-LD with author, dates matching the visible "Stand"', () => {
+  assert(ARTICLES().length > 0, 'no Ratgeber article yet');
+  for (const f of ARTICLES()) {
+    const h = read(f);
+    const ld = [...h.matchAll(/<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)]
+      .map((m) => JSON.parse(m[1]));
+    const a = ld.find((b) => b['@type'] === 'Article');
+    assert(a, `${f}: no Article JSON-LD`);
+    assert(a.author && a.author.name === 'Jens Laufer', `${f}: author is not Jens Laufer`);
+    assert(a.datePublished && a.dateModified, `${f}: datePublished/dateModified missing`);
+    const m = h.replace(/<[^>]+>/g, ' ').match(/Stand: (\d{1,2})\. (\S+) (\d{4})/);
+    assert(m, `${f}: no visible "Stand" date`);
+    const iso = `${m[3]}-${String(MONTHS.indexOf(m[2]) + 1).padStart(2, '0')}-${m[1].padStart(2, '0')}`;
+    assert(a.dateModified === iso, `${f}: dateModified ${a.dateModified} vs visible ${iso}`);
+    assert(/href=["'](\.\/|https:\/\/invoicegrab\.de\/)["']/.test(h), `${f}: no link back to the homepage`);
+  }
+});
+
 check('no fake ratings in structured data', () => {
   assert(!/aggregateRating|reviewRating/.test(index), 'rating markup without real reviews');
 });
