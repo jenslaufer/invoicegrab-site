@@ -9,6 +9,7 @@ InvoiceGrab läuft im Browser in der bestehenden Amazon-Sitzung: keine Zugangsda
 - [Anleitung und Produktseite](https://invoicegrab.de/index.md): Amazon-Rechnungen herunterladen am PC, in der App, mit Amazon Business, bei fehlender Rechnung; alle auf einmal mit InvoiceGrab; Preis, Datenschutz
 - [Ratgeber](https://invoicegrab.de/ratgeber.md): Übersicht aller Anleitungen
 - [Amazon-Rechnung fehlt](https://invoicegrab.de/amazon-rechnung-fehlt.md): Bestellübersicht statt Rechnung, Rechnung beim Händler oder bei Amazon anfordern, Vorsteuerabzug
+- [Amazon-Rechnung ausdrucken](https://invoicegrab.de/amazon-rechnung-ausdrucken.md): Rechnung statt Bestellübersicht drucken, am PC und am iPhone, Ausdruck und Aufbewahrung, viele Rechnungen auf einmal
 - [Häufige Fragen](https://invoicegrab.de/faq.md): alle Rechnungen auf einmal, GoBD-Dateinamen, DATEV, Marktplätze, Preis
 
 ## Optional
