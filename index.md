@@ -32,7 +32,7 @@ Amazon Business hat einen eigenen Bereich „Meine Rechnungen“ mit Sammel-Down
 - Marketplace-Händler: Der Händler stellt die Rechnung. Lädt er sie nicht hoch, gibt es nur eine Bestellübersicht. Anfordern über „Verkäufer kontaktieren“.
 - Storniert oder digital: keine Rechnung bzw. an anderer Stelle.
 
-Die Bestellübersicht ist keine Rechnung. Für den Vorsteuerabzug zählt die Rechnung des Verkäufers. Fehlt eine Rechnung zu einer Bestellung, die Amazon selbst verkauft hat, hilft der Amazon-Kundenservice.
+Die Bestellübersicht ist keine Rechnung. Für den Vorsteuerabzug zählt die Rechnung des Verkäufers. Fehlt eine Rechnung zu einer Bestellung, die Amazon selbst verkauft hat, hilft der Amazon-Kundenservice. Ausführlich: [Amazon-Rechnung fehlt](https://invoicegrab.de/amazon-rechnung-fehlt.md)
 
 ## Alle Amazon-Rechnungen auf einmal herunterladen
 
@@ -64,6 +64,6 @@ InvoiceGrab hat keinen Server. Der Lauf passiert im Browser, in deiner bereits a
 - **downloads** — legt das fertige ZIP im Download-Ordner ab
 - **www.amazon.de** — liest während eines Laufs deine eigenen Bestell- und Rechnungsseiten. Keine anderen Websites.
 
-[Datenschutzerklärung](https://invoicegrab.de/privacy.html) · [Impressum](https://invoicegrab.de/impressum.html) · [Häufige Fragen](https://invoicegrab.de/faq.md)
+[Datenschutzerklärung](https://invoicegrab.de/privacy.html) · [Impressum](https://invoicegrab.de/impressum.html) · [Häufige Fragen](https://invoicegrab.de/faq.md) · [Ratgeber](https://invoicegrab.de/ratgeber.md)
 
 Von Jens Laufer, Solytics GmbH · jens.laufer@solytics.de
