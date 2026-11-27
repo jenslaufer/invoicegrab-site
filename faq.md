@@ -1,10 +1,22 @@
 # InvoiceGrab — Häufige Fragen
 
-InvoiceGrab ist eine Chrome-Erweiterung, die alle Rechnungen deiner amazon.de-Bestellungen eines Zeitraums auf einmal als PDF herunterlädt. Produktseite: https://invoicegrab.de/
+InvoiceGrab ist eine Browser-Erweiterung für Chrome und Firefox, die alle Rechnungen deiner amazon.de-Bestellungen eines Zeitraums auf einmal als PDF herunterlädt. Produktseite: https://invoicegrab.de/
+
+## Gibt es bei Amazon einen Sammel-Download für alle Rechnungen?
+
+Für private Konten nicht. Dort lädst du jede Rechnung einzeln über „Meine Bestellungen“. Amazon Business hat unter „Meine Rechnungen“ einen Sammel-Download als ZIP. Für private amazon.de-Konten lädt InvoiceGrab alle Rechnungen eines Zeitraums in einem Lauf.
+
+## Wo finde ich die Rechnung in der Amazon-App?
+
+Menü oder Profil → „Meine Bestellungen“ → Bestellung → „Bestelldetails“ → „Rechnung anzeigen“. Fehlt der Link, öffne amazon.de im Browser als Desktop-Website.
 
 ## Kann ich alle Amazon-Rechnungen auf einmal herunterladen?
 
-Ja. Du wählst einen Zeitraum — ein Jahr, ein Quartal oder freie Daten — und InvoiceGrab lädt die Rechnungs-PDFs aller Bestellungen darin in einem Durchgang als ZIP. In der kostenlosen Version sind es 5 Rechnungen pro Lauf, mit PRO unbegrenzt.
+Ja, mit InvoiceGrab. Du wählst einen Zeitraum — ein Jahr, ein Quartal oder freie Daten — und die Erweiterung lädt die Rechnungs-PDFs aller Bestellungen darin in einem Durchgang als ZIP. In der kostenlosen Version sind es 5 Rechnungen pro Lauf, mit PRO unbegrenzt.
+
+## Funktioniert InvoiceGrab auch in Firefox?
+
+Ja. InvoiceGrab gibt es im [Chrome Web Store](https://chromewebstore.google.com/detail/gkjglloohfeojkcflpafcahfkabdflom) und bei [Firefox Add-ons](https://addons.mozilla.org/de/firefox/addon/invoicegrab-amazon-rechnungen-/), jeweils für den Browser am Rechner.
 
 ## Sind die Dateinamen GoBD-konform?
 

@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Amazon Rechnungen herunterladen — alle auf einmal als PDF | InvoiceGrab</title>
-<meta name="description" content="Alle amazon.de-Rechnungen eines Zeitraums als PDF laden: ein ZIP, GoBD-konforme Dateinamen, DATEV-tauglicher CSV-Index. Chrome-Erweiterung.">
+<title>Amazon Rechnungen herunterladen: einzeln oder alle als PDF</title>
+<meta name="description" content="So lädst du Amazon-Rechnungen als PDF herunter – am PC, in der App, mit Business-Konto. Oder alle Rechnungen eines Zeitraums auf einmal: ein ZIP mit DATEV-CSV.">
 <link rel="canonical" href="https://invoicegrab.de/">
 <link rel="alternate" type="text/markdown" href="index.md">
 <meta name="robots" content="index, follow">
@@ -12,8 +12,8 @@
 
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://invoicegrab.de/">
-<meta property="og:title" content="Amazon Rechnungen herunterladen — alle auf einmal als PDF">
-<meta property="og:description" content="Zeitraum wählen, ein Klick: alle Rechnungs-PDFs deiner amazon.de-Bestellungen als ZIP, GoBD-konform benannt, mit DATEV-tauglichem Index.">
+<meta property="og:title" content="Amazon Rechnungen herunterladen: einzeln oder alle als PDF">
+<meta property="og:description" content="So lädst du Amazon-Rechnungen als PDF herunter – am PC, in der App, mit Business-Konto. Oder alle Rechnungen eines Zeitraums auf einmal: ein ZIP mit DATEV-CSV.">
 <meta property="og:image" content="https://invoicegrab.de/img/og.jpg">
 <meta property="og:locale" content="de_DE">
 <meta name="twitter:card" content="summary_large_image">
@@ -47,12 +47,22 @@ p{margin:.7em 0}
 /* hero */
 .hero{padding:56px 0 40px;border-bottom:1px solid var(--line)}
 .hero .kicker{font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:14px}
-.hero p.lead{font-size:1.12rem;max-width:44em;color:#33312B}
-.cta{display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:0 22px;margin-top:22px;
+.byline{font-size:.88rem;color:var(--muted);margin:12px 0 0}
+.answer{font-size:1.12rem;max-width:44em;color:#33312B;border-left:3px solid var(--brand);padding:2px 0 2px 16px;margin-top:22px}
+.ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px}
+.cta{display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:0 22px;
   background:var(--brand);color:#fff;text-decoration:none;font-weight:600;border-radius:2px}
 .cta:hover{background:var(--deep)}
+.cta.alt{background:transparent;color:var(--deep);border:2px solid var(--brand)}
+.cta.alt:hover{background:#fff}
 .under{margin-top:12px;font-size:.9rem;color:var(--muted)}
 .under strong{color:var(--ink);font-weight:600}
+
+/* how-to */
+.steps{margin:22px 0 0;padding-left:1.4em;max-width:46em}
+.steps li{margin:8px 0;padding-left:4px}
+.note{max-width:46em;font-size:.95rem;color:#33312B;background:#fff;border:1px solid var(--line);border-radius:2px;padding:12px 16px;margin-top:20px}
+section p,section ul{max-width:46em}
 
 /* ledger comparison */
 .ledger{margin:0;padding:0;list-style:none;border-top:1px solid var(--line)}
@@ -62,7 +72,6 @@ p{margin:.7em 0}
 @media(max-width:720px){.cols{grid-template-columns:1fr;gap:28px}}
 
 section{padding:48px 0;border-bottom:1px solid var(--line)}
-section h2 + p{max-width:44em}
 
 /* feature blocks */
 .feat{margin-top:34px}
@@ -107,32 +116,101 @@ footer a{color:var(--muted)}
     </svg>
     InvoiceGrab
   </a>
-  <a class="plain" href="https://chromewebstore.google.com/detail/gkjglloohfeojkcflpafcahfkabdflom">Im Chrome Web Store</a>
+  <a class="plain" href="#alle">Alle auf einmal laden</a>
 </div></div>
 
 <header class="hero"><div class="wrap">
-  <div class="kicker">Chrome-Erweiterung für amazon.de</div>
-  <h1>Amazon Rechnungen herunterladen — alle auf einmal</h1>
-  <p class="lead">InvoiceGrab ist eine Chrome-Erweiterung, die alle Rechnungen deiner
-  amazon.de-Bestellungen eines Zeitraums auf einmal als PDF herunterlädt — für alle, die ihre
-  Amazon-Belege für Buchhaltung oder Steuerberater sammeln.</p>
-  <p class="lead">Zeitraum wählen, ein Klick: alle Rechnungs-PDFs deiner amazon.de-Bestellungen
-  landen als ZIP im Download-Ordner. Benannt nach GoBD-Schema, mit einem CSV-Index, den dein
-  Steuerberater direkt lesen kann.</p>
-  <a class="cta" href="https://chromewebstore.google.com/detail/gkjglloohfeojkcflpafcahfkabdflom">Zu Chrome hinzufügen</a>
+  <div class="kicker">Anleitung · Browser-Erweiterung für Chrome und Firefox</div>
+  <h1>Amazon Rechnungen herunterladen – einzeln oder alle auf einmal</h1>
+  <p class="byline">Stand: 27. November 2026 · von Jens Laufer</p>
+  <p class="answer">Kurz: Melde dich auf amazon.de an, öffne „Meine Bestellungen“, klicke bei der
+  Bestellung auf „Rechnung“ und wähle die Rechnung aus. Die PDF öffnet sich im Browser – speichern,
+  fertig. Einen Sammel-Download für Privatkonten hat Amazon nicht. Alle Rechnungen eines Zeitraums
+  auf einmal lädt die Browser-Erweiterung InvoiceGrab als ZIP.</p>
+  <div class="ctas">
+    <a class="cta" href="https://chromewebstore.google.com/detail/gkjglloohfeojkcflpafcahfkabdflom">Zu Chrome hinzufügen</a>
+    <a class="cta alt" href="https://addons.mozilla.org/de/firefox/addon/invoicegrab-amazon-rechnungen-/">Zu Firefox hinzufügen</a>
+  </div>
   <p class="under"><strong>Kostenlos: 5 Rechnungen pro Lauf.</strong>
-  PRO 19 €/Jahr. Läuft in deinem Browser mit deiner bestehenden
-  Amazon-Anmeldung — keine Zugangsdaten, kein Upload, kein Server.</p>
+  PRO 19 €/Jahr. Läuft in deinem Browser mit deiner bestehenden
+  Amazon-Anmeldung – keine Zugangsdaten, kein Upload, kein Server.</p>
 </div></header>
 
-<section><div class="wrap">
-  <h2>Am Quartalsende sind es vier Klicks pro Beleg</h2>
+<section id="pc"><div class="wrap">
+  <h2>Amazon-Rechnung am PC herunterladen</h2>
+  <p>Am Rechner ist der Weg am kürzesten. So kommst du zu einer einzelnen Rechnung als PDF:</p>
+  <ol class="steps">
+    <li>Öffne <strong>amazon.de</strong> und melde dich an.</li>
+    <li>Klicke oben rechts auf <strong>„Konto und Listen“</strong> und dann auf
+    <strong>„Meine Bestellungen“</strong>.</li>
+    <li>Wähle über dem Bestellverlauf den Zeitraum, zum Beispiel ein Jahr, und such die Bestellung.</li>
+    <li>Klicke bei der Bestellung auf <strong>„Rechnung“</strong>. Amazon zeigt dann die Rechnung
+    oder eine Auswahl, wenn es mehrere gibt. Je nach Ansicht heißt der Link auch „Rechnung anzeigen“
+    oder „Rechnung drucken/herunterladen“.</li>
+    <li>Die Rechnung öffnet sich als PDF. Speichere sie und gib ihr einen Namen, den du später wiederfindest,
+    etwa Datum, Bestellnummer und Betrag.</li>
+  </ol>
+  <p class="note"><strong>Mehrere Rechnungen pro Bestellung?</strong> Das ist normal. Wird eine
+  Bestellung in Teilen geliefert, gibt es pro Lieferung eine Rechnung. Lade alle, sonst passt die
+  Summe nicht zur Abbuchung.</p>
+</div></section>
+
+<section id="app"><div class="wrap">
+  <h2>Amazon-Rechnung am iPhone oder in der App</h2>
+  <p>In der Amazon-App tippst du auf das Menü (☰) oder das Profil-Symbol, dann auf
+  <strong>„Meine Bestellungen“</strong>. Öffne die Bestellung, dann die
+  <strong>„Bestelldetails“</strong>, und tippe auf <strong>„Rechnung anzeigen“</strong> bzw.
+  „Rechnung herunterladen“. Auf dem iPhone speicherst du die PDF über <strong>Teilen → „In Dateien
+  sichern“</strong>.</p>
+  <p>Fehlt der Link in der App, öffne amazon.de in Safari und fordere über das Seitenmenü in der
+  Adressleiste die <strong>„Desktop-Website“</strong> an. Dann gehst du vor wie am PC. Rechnungen
+  erscheinen oft erst nach dem Versand – fehlt sie direkt nach der Bestellung, schau später noch
+  einmal nach.</p>
+  <p>Für viele Rechnungen ist das Handy der falsche Ort: InvoiceGrab läuft nur in Chrome und
+  Firefox am Rechner, nicht auf dem iPhone.</p>
+</div></section>
+
+<section id="business"><div class="wrap">
+  <h2>Amazon Business: Rechnungen gesammelt herunterladen</h2>
+  <p>Mit einem Amazon-Business-Konto gibt es einen eigenen Bereich <strong>„Meine Rechnungen“</strong>.
+  Dort markierst du mehrere Belege und lädst sie gesammelt als ZIP herunter. Zugriff haben
+  Administratoren und Nutzer mit der Rolle „Buchhaltung und Finanzen“. Einzelne Rechnungen findest
+  du wie gewohnt über „Meine Bestellungen“.</p>
+  <p>InvoiceGrab ist für private amazon.de-Konten gebaut. Einen Sammelabruf für Amazon Business
+  bietet es nicht.</p>
+</div></section>
+
+<section id="fehlt"><div class="wrap">
+  <h2>Rechnung fehlt? Nur eine Bestellübersicht?</h2>
+  <p>Wenn bei einer Bestellung kein Rechnungs-Link steht, hat das meist einen dieser Gründe:</p>
+  <ul>
+    <li><strong>Noch nicht versandt.</strong> Amazon stellt die Rechnung erst mit dem Versand aus.</li>
+    <li><strong>Marketplace-Händler.</strong> Hat ein anderer Händler verkauft, stellt er die
+    Rechnung, nicht Amazon. Manche laden sie bei Amazon hoch, andere nicht. Dann bekommst du nur eine
+    Bestellübersicht. Fordere die Rechnung über <strong>„Verkäufer kontaktieren“</strong> in der
+    Bestellung an.</li>
+    <li><strong>Storniert oder digital.</strong> Für stornierte Bestellungen gibt es keine Rechnung,
+    digitale Käufe stehen teils an anderer Stelle.</li>
+  </ul>
+  <p>Wichtig für die Buchhaltung: Die Bestellübersicht ist keine Rechnung. Für den Vorsteuerabzug
+  brauchst du die Rechnung des Verkäufers. Fehlt eine Rechnung zu einer Bestellung, die Amazon
+  selbst verkauft hat, hilft der Amazon-Kundenservice; sie kommt dann meist per E-Mail.</p>
+</div></section>
+
+<section id="alle"><div class="wrap">
+  <h2>Alle Amazon-Rechnungen auf einmal herunterladen</h2>
+  <p>Für private Konten hat Amazon keinen Sammel-Download. Wer am Jahresende fünfzig oder
+  dreihundert Belege braucht, klickt sie einzeln durch – oder lässt das InvoiceGrab machen. Die
+  Erweiterung öffnet deine Bestellseite, lädt die Rechnungs-PDFs eines Zeitraums und legt sie als
+  ZIP in deinen Download-Ordner.</p>
+  <p>„Ich habe damit meine eigenen 336 Amazon-Rechnungen von 2019 bis 2026 in einem Lauf geladen.“
+  – Jens Laufer, Entwickler von InvoiceGrab</p>
   <div class="cols">
     <div>
       <h3>Von Hand</h3>
       <ul class="ledger">
         <li><span class="n">01</span><span>Bestellung öffnen</span></li>
-        <li><span class="n">02</span><span>Rechnung suchen — mal beim Händler, mal bei Amazon</span></li>
+        <li><span class="n">02</span><span>Rechnung suchen – mal beim Händler, mal bei Amazon</span></li>
         <li><span class="n">03</span><span>PDF speichern, Datei umbenennen</span></li>
         <li><span class="n">04</span><span>Und am Ende zählen, ob etwas fehlt</span></li>
       </ul>
@@ -147,6 +225,10 @@ footer a{color:var(--muted)}
       </ul>
     </div>
   </div>
+  <div class="ctas">
+    <a class="cta" href="https://chromewebstore.google.com/detail/gkjglloohfeojkcflpafcahfkabdflom">Zu Chrome hinzufügen</a>
+    <a class="cta alt" href="https://addons.mozilla.org/de/firefox/addon/invoicegrab-amazon-rechnungen-/">Zu Firefox hinzufügen</a>
+  </div>
 </div></section>
 
 <section><div class="wrap">
@@ -155,13 +237,13 @@ footer a{color:var(--muted)}
   <div class="feat">
     <h3>Ein Lauf statt fünfzig Klicks</h3>
     <p>Das Panel öffnet sich direkt auf deiner Bestellseite. Zeitraum als Jahr, Quartal oder
-    freies Datum. Der Fortschritt läuft sichtbar mit — du siehst, bei welcher Bestellung er steht.</p>
-    <figure><img src="./img/01-zeitraum.webp" width="1100" height="688" alt="Das InvoiceGrab-Panel auf der amazon.de-Bestellseite mit Zeitraumauswahl und der Schaltfläche „Rechnungen als ZIP laden“"></figure>
+    freies Datum. Der Fortschritt läuft sichtbar mit – du siehst, bei welcher Bestellung er steht.</p>
+    <figure><img loading="lazy" src="./img/01-zeitraum.webp" width="1100" height="688" alt="Das InvoiceGrab-Panel auf der amazon.de-Bestellseite mit Zeitraumauswahl und der Schaltfläche „Rechnungen als ZIP laden“"></figure>
   </div>
 
   <div class="feat">
     <h3>Prüfungsfest benannt</h3>
-    <p>Jede Datei heißt <span class="mono">JJJJ-MM-TT_Bestellnr_Betrag.pdf</span> — sortierbar,
+    <p>Jede Datei heißt <span class="mono">JJJJ-MM-TT_Bestellnr_Betrag.pdf</span> – sortierbar,
     eindeutig, ohne Nacharbeit im Dateimanager.</p>
     <figure><img loading="lazy" src="./img/04-gobd-namen.webp" width="1100" height="688" alt="Download-Ordner mit Rechnungs-PDFs im Namensschema Datum, Bestellnummer und Betrag"></figure>
   </div>
@@ -199,7 +281,7 @@ footer a{color:var(--muted)}
     </div>
     <div class="plan pro">
       <div class="badge">Pro</div>
-      <div class="price">19 €/Jahr</div>
+      <div class="price">19 €/Jahr</div>
       <p style="color:var(--muted);margin:0">jährliche Abrechnung</p>
       <ul>
         <li>Unbegrenzt Rechnungen pro Lauf</li>
@@ -216,9 +298,9 @@ footer a{color:var(--muted)}
   Amazon-Sitzung. Die Erweiterung fragt keine Zugangsdaten ab, lädt nichts hoch und liest
   außerhalb eines von dir gestarteten Laufs nichts.</p>
   <ul class="ledger">
-    <li><span class="n mono">01</span><span><strong>storage</strong> — Einstellungen und Lizenzstatus, lokal im Browser</span></li>
-    <li><span class="n mono">02</span><span><strong>downloads</strong> — legt das fertige ZIP im Download-Ordner ab</span></li>
-    <li><span class="n mono">03</span><span><strong>www.amazon.de</strong> — liest während eines Laufs deine eigenen Bestell- und Rechnungsseiten. Keine anderen Websites.</span></li>
+    <li><span class="n mono">01</span><span><strong>storage</strong> – Einstellungen und Lizenzstatus, lokal im Browser</span></li>
+    <li><span class="n mono">02</span><span><strong>downloads</strong> – legt das fertige ZIP im Download-Ordner ab</span></li>
+    <li><span class="n mono">03</span><span><strong>www.amazon.de</strong> – liest während eines Laufs deine eigenen Bestell- und Rechnungsseiten. Keine anderen Websites.</span></li>
   </ul>
   <p><a href="./privacy.html">Datenschutzerklärung lesen</a></p>
 </div></section>
@@ -226,22 +308,36 @@ footer a{color:var(--muted)}
 <section><div class="wrap">
   <h2>Häufige Fragen</h2>
 
+  <details><summary>Gibt es bei Amazon einen Sammel-Download für alle Rechnungen?</summary>
+    <p>Für private Konten nicht. Dort lädst du jede Rechnung einzeln über „Meine Bestellungen“.
+    Amazon Business hat unter „Meine Rechnungen“ einen Sammel-Download als ZIP. Für private
+    amazon.de-Konten lädt InvoiceGrab alle Rechnungen eines Zeitraums in einem Lauf.</p></details>
+
+  <details><summary>Wo finde ich die Rechnung in der Amazon-App?</summary>
+    <p>Menü oder Profil → „Meine Bestellungen“ → Bestellung → „Bestelldetails“ → „Rechnung
+    anzeigen“. Fehlt der Link, öffne amazon.de im Browser als Desktop-Website.</p></details>
+
   <details><summary>Kann ich alle Amazon-Rechnungen auf einmal herunterladen?</summary>
-    <p>Ja. Du wählst einen Zeitraum — ein Jahr, ein Quartal oder freie Daten — und InvoiceGrab lädt
-    die Rechnungs-PDFs aller Bestellungen darin in einem Durchgang als ZIP. In der kostenlosen
-    Version sind es 5 Rechnungen pro Lauf, mit PRO unbegrenzt.</p></details>
+    <p>Ja, mit InvoiceGrab. Du wählst einen Zeitraum – ein Jahr, ein Quartal oder freie Daten – und
+    die Erweiterung lädt die Rechnungs-PDFs aller Bestellungen darin in einem Durchgang als ZIP. In
+    der kostenlosen Version sind es 5 Rechnungen pro Lauf, mit PRO unbegrenzt.</p></details>
+
+  <details><summary>Funktioniert InvoiceGrab auch in Firefox?</summary>
+    <p>Ja. InvoiceGrab gibt es im <a href="https://chromewebstore.google.com/detail/gkjglloohfeojkcflpafcahfkabdflom">Chrome Web Store</a>
+    und bei <a href="https://addons.mozilla.org/de/firefox/addon/invoicegrab-amazon-rechnungen-/">Firefox Add-ons</a>,
+    jeweils für den Browser am Rechner.</p></details>
 
   <details><summary>Sind die Dateinamen GoBD-konform?</summary>
-    <p>Ja, die Benennung: Die Dateien heißen <span class="mono">JJJJ-MM-TT_Bestellnr_Betrag.pdf</span> — chronologisch sortierbar, eindeutig einer Bestellung zugeordnet und ohne manuelles
+    <p>Ja, die Benennung: Die Dateien heißen <span class="mono">JJJJ-MM-TT_Bestellnr_Betrag.pdf</span> – chronologisch sortierbar, eindeutig einer Bestellung zugeordnet und ohne manuelles
     Umbenennen archivierbar. Die GoBD-Konformität deiner Ablage hängt zusätzlich an deinem
-    Archivsystem — die Benennung ist der Teil, den InvoiceGrab übernimmt.</p></details>
+    Archivsystem – die Benennung ist der Teil, den InvoiceGrab übernimmt.</p></details>
 
   <details><summary>Funktioniert InvoiceGrab mit amazon.com oder anderen Marktplätzen?</summary>
     <p>Nein. Unterstützt wird ausschließlich amazon.de. Weitere Marktplätze stehen auf der Roadmap.</p></details>
 
   <details><summary>Was passiert mit Bestellungen ohne hinterlegte Rechnung?</summary>
     <p>Sie werden übersprungen und in der <span class="mono">zusammenfassung.txt</span> namentlich
-    ausgewiesen. InvoiceGrab fordert keine fehlenden Rechnungen bei Marketplace-Händlern an —
+    ausgewiesen. InvoiceGrab fordert keine fehlenden Rechnungen bei Marketplace-Händlern an –
     aber du siehst, welche fehlen.</p></details>
 
   <details><summary>Brauche ich meine Amazon-Zugangsdaten?</summary>
@@ -250,21 +346,34 @@ footer a{color:var(--muted)}
 
   <details><summary>Kann ich die Belege nach DATEV übernehmen?</summary>
     <p>Ja, über die <span class="mono">index.csv</span> im ZIP. Sie enthält Belegdatum, Belegnummer, Netto,
-    USt-Betrag, USt-Satz, Brutto, Währung und Dateiname — die Spalten, die eine Buchungsvorlage
+    USt-Betrag, USt-Satz, Brutto, Währung und Dateiname – die Spalten, die eine Buchungsvorlage
     braucht. Gemischte Steuersätze stehen als Splitbuchung.</p></details>
 
   <details><summary>Was kostet InvoiceGrab?</summary>
     <p>Die kostenlose Version bleibt dauerhaft kostenlos und lädt 5 Rechnungen pro Lauf.
-    PRO kostet 19 €/Jahr und hebt die Begrenzung auf.</p></details>
+    PRO kostet 19 €/Jahr und hebt die Begrenzung auf.</p></details>
+</div></section>
+
+<section id="ueber"><div class="wrap">
+  <h2>Über InvoiceGrab</h2>
+  <p>InvoiceGrab kommt von Jens Laufer, Data Scientist und Geschäftsführer der Solytics GmbH.
+  Er hat die Erweiterung gebaut und mit seinem eigenen Amazon-Konto getestet: 336 Rechnungen aus
+  sieben Jahren in einem Lauf. Fragen und Fehlermeldungen gehen direkt an ihn:
+  <a href="mailto:jens.laufer@solytics.de">jens.laufer@solytics.de</a>.</p>
 </div></section>
 
 <section style="border-bottom:none"><div class="wrap" style="text-align:center">
-  <h2>Ein Quartal in einem Lauf</h2>
-  <a class="cta" href="https://chromewebstore.google.com/detail/gkjglloohfeojkcflpafcahfkabdflom">Zu Chrome hinzufügen</a>
+  <h2>Ein Jahr Amazon-Rechnungen in einem Lauf</h2>
+  <div class="ctas" style="justify-content:center">
+    <a class="cta" href="https://chromewebstore.google.com/detail/gkjglloohfeojkcflpafcahfkabdflom">Zu Chrome hinzufügen</a>
+    <a class="cta alt" href="https://addons.mozilla.org/de/firefox/addon/invoicegrab-amazon-rechnungen-/">Zu Firefox hinzufügen</a>
+  </div>
 </div></section>
 
 <footer><div class="wrap">
   © 2026 Solytics GmbH · InvoiceGrab ·
+  <a href="https://chromewebstore.google.com/detail/gkjglloohfeojkcflpafcahfkabdflom">Chrome Web Store</a> ·
+  <a href="https://addons.mozilla.org/de/firefox/addon/invoicegrab-amazon-rechnungen-/">Firefox Add-ons</a> ·
   <a href="./impressum.html">Impressum</a> ·
   <a href="./privacy.html">Datenschutzerklärung</a> ·
   <a href="mailto:jens.laufer@solytics.de">jens.laufer@solytics.de</a> ·
@@ -277,14 +386,17 @@ footer a{color:var(--muted)}
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
   "name": "InvoiceGrab",
-  "description": "Chrome-Erweiterung, die alle Rechnungs-PDFs der eigenen amazon.de-Bestellungen eines Zeitraums als ZIP herunterlädt — GoBD-konform benannt, mit DATEV-tauglichem CSV-Index.",
+  "description": "Browser-Erweiterung für Chrome und Firefox, die alle Rechnungs-PDFs der eigenen amazon.de-Bestellungen eines Zeitraums als ZIP herunterlädt — GoBD-konform benannt, mit DATEV-tauglichem CSV-Index.",
   "url": "https://invoicegrab.de/",
   "applicationCategory": "BrowserApplication",
-  "operatingSystem": "Chrome",
+  "operatingSystem": "Chrome, Firefox",
   "inLanguage": "de",
-  "softwareVersion": "0.2.0",
   "installUrl": "https://chromewebstore.google.com/detail/gkjglloohfeojkcflpafcahfkabdflom",
-  "sameAs": ["https://chromewebstore.google.com/detail/gkjglloohfeojkcflpafcahfkabdflom"],
+  "downloadUrl": ["https://chromewebstore.google.com/detail/gkjglloohfeojkcflpafcahfkabdflom",
+    "https://addons.mozilla.org/de/firefox/addon/invoicegrab-amazon-rechnungen-/"],
+  "screenshot": "https://invoicegrab.de/img/01-zeitraum.webp",
+  "sameAs": ["https://chromewebstore.google.com/detail/gkjglloohfeojkcflpafcahfkabdflom",
+    "https://addons.mozilla.org/de/firefox/addon/invoicegrab-amazon-rechnungen-/"],
   "author": { "@type": "Person", "name": "Jens Laufer", "url": "https://jenslaufer.com/" },
   "publisher": { "@type": "Organization", "name": "Solytics GmbH", "url": "https://solytics.de/" },
   "offers": [
@@ -299,10 +411,59 @@ footer a{color:var(--muted)}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Solytics GmbH",
+  "url": "https://solytics.de/",
+  "logo": "https://invoicegrab.de/img/icon-128.png",
+  "sameAs": ["https://chromewebstore.google.com/detail/gkjglloohfeojkcflpafcahfkabdflom",
+    "https://addons.mozilla.org/de/firefox/addon/invoicegrab-amazon-rechnungen-/"]
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Amazon Rechnungen herunterladen – einzeln oder alle auf einmal",
+  "url": "https://invoicegrab.de/",
+  "inLanguage": "de",
+  "dateModified": "2026-11-27",
+  "author": { "@type": "Person", "name": "Jens Laufer", "url": "https://jenslaufer.com/" },
+  "publisher": { "@type": "Organization", "name": "Solytics GmbH", "url": "https://solytics.de/",
+    "logo": "https://invoicegrab.de/img/icon-128.png" },
+  "about": { "@type": "SoftwareApplication", "name": "InvoiceGrab", "url": "https://invoicegrab.de/" }
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "Amazon-Rechnung am PC herunterladen",
+  "inLanguage": "de",
+  "step": [
+    { "@type": "HowToStep", "position": 1, "text": "amazon.de öffnen und anmelden." },
+    { "@type": "HowToStep", "position": 2, "text": "Konto und Listen → Meine Bestellungen öffnen." },
+    { "@type": "HowToStep", "position": 3, "text": "Zeitraum wählen und die Bestellung suchen." },
+    { "@type": "HowToStep", "position": 4, "text": "Bei der Bestellung auf „Rechnung“ klicken und die Rechnung auswählen." },
+    { "@type": "HowToStep", "position": 5, "text": "Die PDF speichern und eindeutig benennen." }
+  ]
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
   "@type": "FAQPage",
   "mainEntity": [
+    { "@type": "Question", "name": "Gibt es bei Amazon einen Sammel-Download für alle Rechnungen?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Für private Konten nicht; dort lädst du jede Rechnung einzeln über „Meine Bestellungen“. Amazon Business hat unter „Meine Rechnungen“ einen Sammel-Download als ZIP. Für private amazon.de-Konten lädt InvoiceGrab alle Rechnungen eines Zeitraums in einem Lauf." } },
+    { "@type": "Question", "name": "Wo finde ich die Rechnung in der Amazon-App?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Menü oder Profil → „Meine Bestellungen“ → Bestellung → „Bestelldetails“ → „Rechnung anzeigen“. Fehlt der Link, öffne amazon.de im Browser als Desktop-Website." } },
     { "@type": "Question", "name": "Kann ich alle Amazon-Rechnungen auf einmal herunterladen?",
-      "acceptedAnswer": { "@type": "Answer", "text": "Ja. Du wählst einen Zeitraum und InvoiceGrab lädt die Rechnungs-PDFs aller amazon.de-Bestellungen darin in einem Durchgang als ZIP. Kostenlos sind 5 Rechnungen pro Lauf, mit PRO unbegrenzt." } },
+      "acceptedAnswer": { "@type": "Answer", "text": "Ja, mit InvoiceGrab. Du wählst einen Zeitraum und die Erweiterung lädt die Rechnungs-PDFs aller amazon.de-Bestellungen darin in einem Durchgang als ZIP. Kostenlos sind 5 Rechnungen pro Lauf, mit PRO unbegrenzt." } },
+    { "@type": "Question", "name": "Funktioniert InvoiceGrab auch in Firefox?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Ja. InvoiceGrab gibt es im Chrome Web Store und bei Firefox Add-ons, jeweils für den Browser am Rechner." } },
     { "@type": "Question", "name": "Sind die Dateinamen GoBD-konform?",
       "acceptedAnswer": { "@type": "Answer", "text": "Ja, die Benennung: Die Dateien heißen JJJJ-MM-TT_Bestellnr_Betrag.pdf — chronologisch sortierbar, eindeutig zugeordnet, ohne manuelles Umbenennen archivierbar. Die GoBD-Konformität der Ablage hängt zusätzlich am Archivsystem." } },
     { "@type": "Question", "name": "Funktioniert InvoiceGrab mit amazon.com oder anderen Marktplätzen?",

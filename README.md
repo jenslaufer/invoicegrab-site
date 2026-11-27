@@ -1,15 +1,15 @@
 # invoicegrab-site
 
-Static site for the InvoiceGrab Chrome extension, served by GitHub Pages from
+Static site for the InvoiceGrab browser extension (Chrome and Firefox), served by GitHub Pages from
 `master` at <https://invoicegrab.de/> (`CNAME`; since 2026-11-24). GitHub Pages
 redirects the old `jenslaufer.com/invoicegrab-site/…` paths there with a 301.
 
 | File | Purpose |
 |---|---|
-| `index.html` | Product page — the only surface outside the Chrome Web Store where someone can be convinced |
+| `index.html` | How-to for "amazon rechnungen herunterladen" with InvoiceGrab as the shortcut. Searchers want the manual route, so the page answers first (SEO plan 2026-11-27). The visible "Stand" date must match `dateModified` in the WebPage JSON-LD |
 | `privacy.html` | **The privacy policy the Chrome Web Store listing links to.** The store points at this FILE (`…/invoicegrab-site/privacy.html`), not at the directory — measured 2026-08-20 in the served listing HTML. Renaming or removing it tears off a mandatory listing link |
 | `impressum.html` | Impressum (§ 5 DDG) — seller is Solytics GmbH, same data as `bieterpost-site/impressum.html` |
-| `sitemap.xml` | **The only discovery path Google has to this page.** Nothing links to `index.html` — the store listing points at `privacy.html`. Named in `robots.txt`; the `invoicegrab.de` property in the Search Console still has to be added |
+| `sitemap.xml` | Lists every HTML page; named in `robots.txt`. Inbound links: solytics.de/produkte/ links `https://invoicegrab.de/`; CWS, AMO and the jenslaufer.com menu still use the old path via the 301. The `invoicegrab.de` property in the Search Console still has to be added |
 | `llms.txt`, `index.md`, `faq.md` | Plain-text copies for LLMs and AI agents ([llmstxt.org](https://llmstxt.org)). Keep in sync with `index.html`; tests guard prices and FAQ questions. LLMs look for `llms.txt` at the host root, so this one is found only by link: `index.html` announces `index.md` as `<link rel="alternate" type="text/markdown">` and links `llms.txt` and `faq.md` in the footer |
 | `CNAME`, `robots.txt` | Bind Pages to `invoicegrab.de`; crawl rules for the host root |
 | `.nojekyll` | Stops GitHub Pages' Jekyll from rendering `index.md` over `index.html` |
