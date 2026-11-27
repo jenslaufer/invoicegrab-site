@@ -209,6 +209,14 @@ check('robots.txt at the host root allows crawling and names the sitemap', () =>
   assert(r.includes(`Sitemap: ${CANONICAL}sitemap.xml`), 'no Sitemap line for the canonical sitemap');
 });
 
+// IndexNow (Bing, Yandex, Seznam, Naver): the key file at the host root proves ownership.
+// Bing feeds ChatGPT and Copilot. Deleting or renaming the file breaks every later ping.
+check('IndexNow key file sits at the root and holds its own name', () => {
+  const keys = readdirSync(root).filter((f) => /^[0-9a-f]{32}\.txt$/.test(f));
+  assert(keys.length === 1, `expected one IndexNow key file, found ${keys.length}`);
+  assert(read(keys[0]).trim() === keys[0].slice(0, 32), `${keys[0]} does not contain its key`);
+});
+
 check('CNAME binds GitHub Pages to the canonical host', () => {
   assert(existsSync(join(root, 'CNAME')), 'CNAME missing');
   assert(read('CNAME').trim() === new URL(CANONICAL).host, `CNAME is ${read('CNAME').trim()}`);
