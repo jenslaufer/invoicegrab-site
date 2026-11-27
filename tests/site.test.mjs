@@ -230,18 +230,129 @@ const ldBlocks = () => [...index.matchAll(
   .map((m) => JSON.parse(m[1]));
 const app = () => ldBlocks().find((b) => b['@type'] === 'SoftwareApplication');
 const STORE_URL = `https://chromewebstore.google.com/detail/${STORE_ID}`;
+// AMO listing public since 2026-11-11 (AMO API status "public"); the site said "Chrome" only.
+const AMO_URL = 'https://addons.mozilla.org/de/firefox/addon/invoicegrab-amazon-rechnungen-/';
 
-check('SoftwareApplication is typed as a Chrome browser extension', () => {
+// ------------------------------------------------------------ search intent
+// SEO plan 2026-11-27: people who search "amazon rechnungen herunterladen" (1,000/month,
+// Keyword Planner DE) want the manual how-to; the ranking pages are guides. A product-only
+// page answers the wrong question. The page answers first, then offers the shortcut.
+const text = index.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/gi, ' ')
+  .replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
+
+check('title and H1 cover single and bulk download', () => {
+  const t = index.match(/<title>([^<]+)<\/title>/)[1];
+  assert(t.startsWith('Amazon Rechnungen herunterladen'), `title: ${t}`);
+  assert(t.length <= 60, `title is ${t.length} chars (max 60, else truncated)`);
+  const h1 = [...index.matchAll(/<h1[^>]*>([\s\S]*?)<\/h1>/g)];
+  assert(h1.length === 1, `expected one H1, got ${h1.length}`);
+  assert(/einzeln/.test(h1[0][1]) && /alle/.test(h1[0][1]), `H1: ${h1[0][1]}`);
+});
+
+check('a short answer with the manual route sits right below the H1', () => {
+  const after = index.split(/<\/h1>/)[1].slice(0, 1500);
+  const m = after.match(/<p class="answer">([\s\S]*?)<\/p>/);
+  assert(m, 'no <p class="answer"> right after the H1');
+  const words = m[1].replace(/<[^>]+>/g, ' ').trim().split(/\s+/).length;
+  assert(words >= 30 && words <= 80, `answer block has ${words} words (30-80)`);
+  assert(/Meine Bestellungen/.test(m[1]), 'answer block does not name "Meine Bestellungen"');
+});
+
+check('manual how-to sections: PC, app, Business, missing invoice, all at once', () => {
+  const h2 = [...index.matchAll(/<h2[^>]*>([\s\S]*?)<\/h2>/g)].map((m) => m[1]);
+  for (const want of [/am PC/, /App/, /Business/, /fehlt/i, /Alle .*auf einmal/]) {
+    assert(h2.some((h) => want.test(h)), `no H2 matches ${want} (have: ${h2.join(' | ')})`);
+  }
+  assert(/<ol[\s>]/.test(index), 'PC steps are not an ordered list');
+});
+
+check('page links both stores', () => {
+  assert(index.includes(STORE_URL), 'Chrome Web Store link missing');
+  assert(index.includes(AMO_URL), 'Firefox Add-ons link missing');
+});
+
+// Competitors show author and date; the visible date must match dateModified.
+check('visible author and "Stand" date match the WebPage dateModified', () => {
+  const m = text.match(/Stand: (\d{1,2})\. (\w+) (\d{4})/);
+  assert(m, 'no visible "Stand: <Tag>. <Monat> <Jahr>"');
+  assert(/von Jens Laufer/.test(text), 'no visible author');
+  const months = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August',
+    'September', 'Oktober', 'November', 'Dezember'];
+  const iso = `${m[3]}-${String(months.indexOf(m[2]) + 1).padStart(2, '0')}-${m[1].padStart(2, '0')}`;
+  const page = ldBlocks().find((b) => b['@type'] === 'WebPage');
+  assert(page, 'WebPage JSON-LD missing');
+  assert(page.dateModified === iso, `dateModified ${page.dateModified} vs visible ${iso}`);
+});
+
+check('Organization JSON-LD links both store listings via sameAs', () => {
+  const org = ldBlocks().find((b) => b['@type'] === 'Organization');
+  assert(org && org.name === 'Solytics GmbH', 'Organization block for Solytics GmbH missing');
+  const same = [].concat(org.sameAs || []);
+  for (const u of [STORE_URL, AMO_URL]) assert(same.includes(u), `Organization sameAs lacks ${u}`);
+});
+
+// Every content page (homepage and future Ratgeber articles) must be reachable and readable
+// by search engines and LLMs alike: static, canonical, described, one H1, a Markdown copy
+// named in llms.txt, and a link from the homepage. Past Vue sites lost pages to redirects
+// and missing sitemap entries; this makes a forgotten page a red test.
+const LEGAL = ['privacy.html', 'impressum.html'];
+const contentPages = () => readdirSync(root).filter((f) => f.endsWith('.html') && !LEGAL.includes(f));
+const urlOf = (f) => (f === 'index.html' ? CANONICAL : CANONICAL + f);
+
+check('every content page: static, canonical, description, one H1', () => {
+  for (const f of contentPages()) {
+    const h = read(f);
+    assert(!/http-equiv\s*=\s*["']refresh/i.test(h), `${f} is a redirect`);
+    const c = h.match(/<link[^>]+rel=["']canonical["'][^>]*href=["']([^"']+)["']/i);
+    assert(c && c[1] === urlOf(f), `${f}: canonical ${c && c[1]}, want ${urlOf(f)}`);
+    const d = h.match(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']+)["']/i);
+    assert(d && d[1].length <= 160, `${f}: description missing or over 160 chars`);
+    const h1 = h.match(/<h1[\s>]/g) || [];
+    assert(h1.length === 1, `${f}: ${h1.length} H1`);
+  }
+});
+
+check('every content page has a Markdown copy linked in llms.txt and its head', () => {
+  const llms = read('llms.txt');
+  for (const f of contentPages()) {
+    const md = f.replace(/\.html$/, '.md');
+    assert(existsSync(join(root, md)), `${f}: ${md} missing`);
+    assert(llms.includes(`](${CANONICAL}${md})`), `llms.txt does not link ${md}`);
+    assert(new RegExp(`rel=["']alternate["'][^>]+href=["']\\.?/?${md}["']`).test(read(f)),
+      `${f}: no rel=alternate to ${md}`);
+  }
+});
+
+check('the homepage links every other content page', () => {
+  const hrefs = [...index.matchAll(/href=["']([^"']+)["']/g)]
+    .map((m) => m[1].replace(CANONICAL, '').replace(/^\.?\//, '').split(/[?#]/)[0]);
+  const orphans = contentPages().filter((f) => f !== 'index.html' && !hrefs.includes(f));
+  assert(orphans.length === 0, `not linked from index.html: ${orphans.join(', ')}`);
+});
+
+check('no fake ratings in structured data', () => {
+  assert(!/aggregateRating|reviewRating/.test(index), 'rating markup without real reviews');
+});
+
+check('Markdown copies and llms.txt mention Firefox', () => {
+  for (const f of ['index.md', 'faq.md', 'llms.txt']) {
+    assert(/Firefox/.test(read(f)), `${f} does not mention Firefox`);
+  }
+});
+
+check('SoftwareApplication is typed as a browser extension for Chrome and Firefox', () => {
   const a = app();
   assert(a.applicationCategory === 'BrowserApplication',
     `applicationCategory is ${a.applicationCategory}`);
-  assert(a.operatingSystem === 'Chrome', `operatingSystem is ${a.operatingSystem}`);
+  assert(a.operatingSystem === 'Chrome, Firefox', `operatingSystem is ${a.operatingSystem}`);
   assert(a.url === CANONICAL, `url is ${a.url}`);
 });
 
-check('SoftwareApplication points at the store listing via sameAs', () => {
+check('SoftwareApplication points at both store listings via sameAs', () => {
   const same = [].concat(app().sameAs || []);
-  assert(same.includes(STORE_URL), `sameAs lacks ${STORE_URL}: ${same.join(', ')}`);
+  for (const u of [STORE_URL, AMO_URL]) {
+    assert(same.includes(u), `sameAs lacks ${u}: ${same.join(', ')}`);
+  }
 });
 
 // The seller is Solytics GmbH (Jens, 2026-11-24): publisher = the company in the Impressum.
@@ -371,7 +482,8 @@ check('privacy.html names Solytics GmbH as controller, no private mail', () => {
   assert(privacy.includes('Solytics GmbH'), 'Solytics GmbH missing in privacy.html');
   assert(privacy.includes('jens.laufer@solytics.de'), 'business contact missing');
   for (const f of ['index.html', 'privacy.html', 'impressum.html', 'index.md', 'faq.md', 'llms.txt']) {
-    assert(!read(f).includes('jenslaufer@gmail.com'), `${f} still shows the private Gmail`);
+    // Any Gmail address is a private one here; the business contact is @solytics.de.
+    assert(!/@gmail\.com/i.test(read(f)), `${f} shows a private Gmail address`);
   }
 });
 

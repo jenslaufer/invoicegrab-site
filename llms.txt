@@ -1,16 +1,17 @@
 # InvoiceGrab
 
-> Chrome-Erweiterung, die alle Rechnungs-PDFs der eigenen amazon.de-Bestellungen eines Zeitraums auf einmal als ZIP herunterlädt — GoBD-konform benannt, mit DATEV-tauglichem CSV-Index.
+> Browser-Erweiterung für Chrome und Firefox, die alle Rechnungs-PDFs der eigenen amazon.de-Bestellungen eines Zeitraums auf einmal als ZIP herunterlädt — GoBD-konform benannt, mit DATEV-tauglichem CSV-Index.
 
 InvoiceGrab läuft im Browser in der bestehenden Amazon-Sitzung: keine Zugangsdaten, kein Upload, kein Server. Unterstützt wird ausschließlich amazon.de. Kostenlos: 5 Rechnungen pro Lauf. PRO: 19 €/Jahr, unbegrenzt.
 
 ## Seiten
 
-- [Produktseite](https://invoicegrab.de/index.md): Funktionen, Ablauf, Preis, Datenschutz
+- [Anleitung und Produktseite](https://invoicegrab.de/index.md): Amazon-Rechnungen herunterladen am PC, in der App, mit Amazon Business, bei fehlender Rechnung; alle auf einmal mit InvoiceGrab; Preis, Datenschutz
 - [Häufige Fragen](https://invoicegrab.de/faq.md): alle Rechnungen auf einmal, GoBD-Dateinamen, DATEV, Marktplätze, Preis
 
 ## Optional
 
-- [Chrome Web Store](https://chromewebstore.google.com/detail/gkjglloohfeojkcflpafcahfkabdflom): Installation
+- [Chrome Web Store](https://chromewebstore.google.com/detail/gkjglloohfeojkcflpafcahfkabdflom): Installation in Chrome
+- [Firefox Add-ons](https://addons.mozilla.org/de/firefox/addon/invoicegrab-amazon-rechnungen-/): Installation in Firefox
 - [Datenschutzerklärung](https://invoicegrab.de/privacy.html)
 - [Impressum](https://invoicegrab.de/impressum.html): Solytics GmbH
